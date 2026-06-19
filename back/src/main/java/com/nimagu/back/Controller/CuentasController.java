@@ -1,10 +1,10 @@
-package com.Sisbul.ApiRrest.controller;
+package com.nimagu.back.Controller;
 
 
-import com.Sisbul.ApiRrest.entidades.CuentaB;
-import com.Sisbul.ApiRrest.entidades.Laboreo;
-import com.Sisbul.ApiRrest.entidades.MovCta;
-import com.Sisbul.ApiRrest.repository.DegrosCuentaRepository;
+import com.nimagu.back.Entidades.CuentaB;
+
+import com.nimagu.back.Entidades.MovCta;
+import com.nimagu.back.Repository.DegrosCuentaRepository;
 
 import java.util.List;
 
@@ -37,9 +37,9 @@ public class CuentasController {
     @SuppressWarnings("null")
     @GetMapping("/cuentasb")
     public ResponseEntity<List<CuentaB>> getAllCuentasb() {
+    List<CuentaB> cuentas = null;
     try {
-      List<CuentaB> cuentas = null;
-            
+                  
       cuentas = degrosctarepo.AllCuentasb();
     
       if (cuentas.isEmpty()) {
@@ -48,7 +48,7 @@ public class CuentasController {
          return new ResponseEntity<>(cuentas, HttpStatus.OK);
       }
     } catch (Exception e) {
-       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+       return new ResponseEntity<>(cuentas, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

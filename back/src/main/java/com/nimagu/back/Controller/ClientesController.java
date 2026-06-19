@@ -1,4 +1,4 @@
-package com.Sisbul.ApiRrest.controller;
+package com.nimagu.back.Controller;
 
 import java.util.List;
 
@@ -15,11 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Sisbul.ApiRrest.entidades.Cliente;
-import com.Sisbul.ApiRrest.entidades.Credito;
-import com.Sisbul.ApiRrest.entidades.ResuSCli;
-import com.Sisbul.ApiRrest.entidades.Saldocli;
-import com.Sisbul.ApiRrest.repository.JdbcDegrosRepository;
+import com.nimagu.back.Entidades.Cliente;
+
+import com.nimagu.back.Repository.JdbcDegrosRepository;
 
 @CrossOrigin(origins = "${FRONTEND_URL}")
 @RestController
@@ -32,8 +30,8 @@ public class ClientesController {
     @SuppressWarnings("null")
     @GetMapping("/clientes")
     public ResponseEntity<List<Cliente>> getAllClientes() {
-    try {
       List<Cliente> clientes = null;
+    try {      
             
       clientes = degrosRepository.AllClientes();
     
@@ -43,7 +41,7 @@ public class ClientesController {
          return new ResponseEntity<>(clientes, HttpStatus.OK);
       }
     } catch (Exception e) {
-       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+       return new ResponseEntity<>(clientes, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
   @RequestMapping(value="/cliente/max")
@@ -82,27 +80,9 @@ public class ClientesController {
       } 
     }
 
-     @PutMapping(value="/actsaldoini")
-    public ResponseEntity<String> updateSaldoInicial(@RequestBody Saldocli saldocli){
-      try {
-        int resultado = degrosRepository.actSaldoInicial(saldocli);    
-        return new ResponseEntity<>(Integer.toString(resultado), HttpStatus.OK);
-      } catch (Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-     
-      } 
-    }
+   
 
-     @PutMapping(value="/actsaldocli")
-     public ResponseEntity<String> updateSaldoCliente(@RequestBody Saldocli saldocli){
-      try {
-        int resultado = degrosRepository.actSaldodelCliente(saldocli);    
-        return new ResponseEntity<>(Integer.toString(resultado), HttpStatus.OK);
-      } catch (Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-     
-      } 
-    }
+  
      @DeleteMapping(value="/cliente", params={"id"})    
     public ResponseEntity<String> borrarCliente(@RequestParam("id") Integer idcliente){
       try {
@@ -123,120 +103,12 @@ public class ClientesController {
       }
     }
 
-    @RequestMapping(value = "/saldosxcli", params={"nrocli"})
-    public ResponseEntity<List<Saldocli>> getSaldosPorCliente(@RequestParam("nrocli") int ncli) {
-    try {
-      List<Saldocli> saldos = null;
-            
-      saldos = degrosRepository.getSaldosPorCliente(ncli);
-    
-      if (saldos.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      } else {
-         return new ResponseEntity<>(saldos, HttpStatus.OK);
-      }
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
+   
 
-  @PostMapping(value="/saldo/nuevo")
-    // Graba un nuevo Saldo del cliente
-    public ResponseEntity<String> crearSaldoCliente(@RequestBody Saldocli saldoc) {
-       try {
-        int nros = degrosRepository.saveSaldoCliente(saldoc);
-        return new ResponseEntity<>(Integer.toString(nros), HttpStatus.CREATED);
-       } catch (Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
+  
                                           
-  @RequestMapping(value ="/cliente/saldo" , params={"idcliente","nrosaldo"} )
-  public ResponseEntity<Saldocli> getSaldodeCliente(@RequestParam("idcliente") Integer idcli,
-                                                   @RequestParam("nrosaldo") Integer  nros) {
-    Saldocli scli = degrosRepository.getSaldoDelCliente(idcli,nros);
-    if (scli != null){
-      return new ResponseEntity<>(scli, HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-  }
+  
 // INFORMES ESTADISTICOS 
 
- @RequestMapping(value = "/infosaldos")
-    public ResponseEntity<List<ResuSCli>> getInformedeSaldos() {
-    try {
-      List<ResuSCli> informe = null;
-            
-      informe = degrosRepository.getInformeSaldos();
-    
-      if (informe.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      } else {
-         return new ResponseEntity<>(informe, HttpStatus.OK);
-      }
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-   
-   //   Creditos en Cta.Cte
- @RequestMapping(value = "/creditos")
- public ResponseEntity<List<Credito>> getAllCreditos() {
-    try {
-      List<Credito> creditos = null;
-            
-      creditos = degrosRepository.AllCreditos();
-    
-      if (creditos.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      } else {
-         return new ResponseEntity<>(creditos, HttpStatus.OK);
-      }
-    } catch (Exception e) {
-       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-   @RequestMapping(value="/creditxcli", params={"id"})
- public ResponseEntity<List<Credito>> getAllCreditosxCli(@RequestParam("id") Integer idcliente) {
-    try {
-      List<Credito> creditos = null;
-            
-      creditos = degrosRepository.AllCreditosxCli(idcliente);
-    
-      if (creditos.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      } else {
-         return new ResponseEntity<>(creditos, HttpStatus.OK);
-      }
-    } catch (Exception e) {
-       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-  @RequestMapping(value="/credito/max")
-  public int getCantidadCreditos(){
-     int cantl = degrosRepository.getMaxCreditos();
-     return cantl;
-  }   
-   @PostMapping(value="/credito/nuevo")
-    // Graba un nuevo credito
-    public ResponseEntity<String> crearCredito(@RequestBody Credito credito) {
-       try {
-        int nrocred = degrosRepository.saveCredito(credito);
-        return new ResponseEntity<>(Integer.toString(nrocred), HttpStatus.CREATED);
-       } catch (Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  @DeleteMapping(value="/credito", params={"id"})    
-    public ResponseEntity<String> borrarCredito(@RequestParam("id") Integer idcredito){
-      try {
-        int nrocred = degrosRepository.deleteCredito(idcredito);
-        return new ResponseEntity<>(Integer.toString(nrocred),HttpStatus.OK);
-      } catch (Exception e) {
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR );
-      }
-
-    }
+ 
 }

@@ -1,4 +1,5 @@
-package com.Sisbul.ApiRrest.controller;
+package com.nimagu.back.Controller;
+
 
 import java.util.List;
 
@@ -14,12 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.Sisbul.ApiRrest.entidades.Empleado;
+import com.nimagu.back.Entidades.Empleado;
 
-import com.Sisbul.ApiRrest.entidades.ResuSEmp;
 
-import com.Sisbul.ApiRrest.entidades.Saldoemp;
-import com.Sisbul.ApiRrest.repository.JdbcDegrosRepository;
+
+import com.nimagu.back.Repository.JdbcDegrosRepository;
 
 @CrossOrigin(origins = "${FRONTEND_URL}")
 @RestController
@@ -32,9 +32,8 @@ public class EmpleadoController {
     @SuppressWarnings("null")
     @GetMapping("/empleados")
     public ResponseEntity<List<Empleado>> getAllEmpleados() {
-    try {
       List<Empleado> empleados = null;
-            
+    try {                  
       empleados = degrosRepository.AllEmpleados();
     
       if (empleados.isEmpty()) {
@@ -43,7 +42,7 @@ public class EmpleadoController {
          return new ResponseEntity<>(empleados, HttpStatus.OK);
       }
     } catch (Exception e) {
-       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+       return new ResponseEntity<>(empleados, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -93,82 +92,9 @@ public class EmpleadoController {
       }
 
     }
-    @RequestMapping(value = "/saldosxemp", params={"nroemp"})
-    public ResponseEntity<List<Saldoemp>> getSaldosPorEmpleado(@RequestParam("nroemp") int nemp) {
-    try {
-      List<Saldoemp> saldos = null;
-            
-      saldos = degrosRepository.getSaldosPorEmpleado(nemp);
-    
-      if (saldos.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      } else {
-         return new ResponseEntity<>(saldos, HttpStatus.OK);
-      }
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }    
-
-   @PostMapping(value="/saldo/nuevo")
-    // Graba un nuevo Saldo del empleado
-    public ResponseEntity<String> crearSaldoEmpleado(@RequestBody Saldoemp saldoe) {
-       try {
-        int nros = degrosRepository.saveSaldoEmpleado(saldoe);
-        return new ResponseEntity<>(Integer.toString(nros), HttpStatus.CREATED);
-       } catch (Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-
-    @PutMapping(value="/actsaldoini")
-    public ResponseEntity<String> updateSaldoInicial(@RequestBody Saldoemp saldoemp){
-      try {
-        int resultado = degrosRepository.actSaldoInicialEmp(saldoemp);    
-        return new ResponseEntity<>(Integer.toString(resultado), HttpStatus.OK);
-      } catch (Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-     
-      } 
-    }
-
-    @PutMapping(value="/actsaldoemp")
-     public ResponseEntity<String> updateSaldoEmpleado(@RequestBody Saldoemp saldoemp){
-      try {
-        int resultado = degrosRepository.actSaldodelEmpleado(saldoemp);    
-        return new ResponseEntity<>(Integer.toString(resultado), HttpStatus.OK);
-      } catch (Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-     
-      } 
-    }
-  @RequestMapping(value ="/empleado/saldo" , params={"idempleado","nrosaldo"} )
-  public ResponseEntity<Saldoemp> getSaldodeCliente(@RequestParam("idempleado") Integer idemp,
-                                                   @RequestParam("nrosaldo") Integer  nros) {
-    Saldoemp semp = degrosRepository.getSaldoDelEmpleado(idemp,nros);
-    if (semp != null){
-      return new ResponseEntity<>(semp, HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-  }
+  
 // INFORMES ESTADISTICOS 
 
- @RequestMapping(value = "/infosaldos")
-    public ResponseEntity<List<ResuSEmp>> getInformedeSaldosEmp() {
-    try {
-      List<ResuSEmp> informe = null;
-            
-      informe = degrosRepository.getInformeSaldosEmp();
-    
-      if (informe.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      } else {
-         return new ResponseEntity<>(informe, HttpStatus.OK);
-      }
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
+ 
 
 }
