@@ -1,4 +1,4 @@
-package com.nimagu.back.Entidades;
+package com.Sisbul.ApiRrest.entidades;
 
 public class Cliente {
    private int idCliente;

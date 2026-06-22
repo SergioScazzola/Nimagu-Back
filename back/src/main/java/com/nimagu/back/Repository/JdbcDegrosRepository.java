@@ -11,6 +11,10 @@ import org.springframework.stereotype.Repository;
 import com.nimagu.back.Entidades.Cliente;
 
 import com.nimagu.back.Entidades.Empleado;
+import com.nimagu.back.Entidades.Proveedor;
+import com.nimagu.back.Entidades.Saldocli;
+import com.nimagu.back.Entidades.Saldoemp;
+import com.nimagu.back.Entidades.Saldoprov;
 
     
     @Repository
@@ -95,6 +99,60 @@ import com.nimagu.back.Entidades.Empleado;
 
       return jdbcTemplate.query(selec, new ClienteRowMapper());      
     } 
+     @Override
+    // Devuelve todos los saldos registrados del cliente ordenados por fecha
+    public List<Saldocli> getSaldosPorCliente(int nrocliente) {   
+      String selec = "SELECT * FROM saldoscli WHERE idCliente=? ORDER BY fecha";
+      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Saldocli.class),nrocliente);
+    }
+   @Override
+    public int saveSaldoCliente(Saldocli saldoc){
+    // Graba un nuevo saldo para el Cliente
+        return jdbcTemplate.update("INSERT INTO saldoscli(idCliente,nrosaldo,fecha,saldo) "+
+                                   "VALUES(?,?,?,?)",
+            new Object[] { saldoc.getIdCliente(),saldoc.getNrosaldo(),saldoc.getFecha(),saldoc.getSaldo()});    
+    }
+
+ @Override
+    public Saldocli  getSaldoDelCliente(int idcli, int nros){
+      String q = "SELECT * FROM saldoscli WHERE idCliente=? AND nrosaldo=?";
+      try {
+        Saldocli saldocli = jdbcTemplate.queryForObject(q,
+            BeanPropertyRowMapper.newInstance(Saldocli.class), idcli,nros);          
+        return saldocli;
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return null;
+      }
+    }
+    @Override
+    // actualiza el saldo inicial del Cliente en la tabla "clientes"
+    public int actSaldoInicial(Saldocli saldoc){
+    
+    int resu = 0;
+    try {                   
+        resu = jdbcTemplate.update("UPDATE clientes SET saldoini=? WHERE idCliente=?",
+                                 
+            new Object[] { saldoc.getSaldo(),saldoc.getIdCliente()});
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return -3;
+    }
+    return resu; 
+    }
+
+ @Override
+    // actualiza el saldo un saldo del Cliente en la tabla saldoscli"
+    public int actSaldodelCliente(Saldocli saldoc){
+    
+    int resu = 0;
+    try {                   
+        resu = jdbcTemplate.update("UPDATE saldoscli SET fecha=?,saldo=? WHERE idCliente=? AND nrosaldo=?",
+                                 
+            new Object[] { saldoc.getFecha(),saldoc.getSaldo(),saldoc.getIdCliente(),saldoc.getNrosaldo()});
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return -3;
+    }
+    return resu; 
+    }
 
    
     
@@ -161,7 +219,137 @@ import com.nimagu.back.Entidades.Empleado;
         resu = -5;   
       }
       return resu;
-    }    
+    }  
+    @Override
+    // Devuelve todos los saldos registrados del empleado ordenados por fecha
+    public List<Saldoemp> getSaldosPorEmpleado(int nroemp) {   
+      String selec = "SELECT * FROM saldosemp WHERE idEmpleado=? ORDER BY fecha";
+      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Saldoemp.class),nroemp);
+    }
+   @Override
+    public int saveSaldoEmpleado(Saldoemp saldoe){
+    // Graba un nuevo saldo para el Empleado
+        return jdbcTemplate.update("INSERT INTO saldosemp(idEmpleado,nrosaldo,fecha,saldo) "+
+                                   "VALUES(?,?,?,?)",
+            new Object[] { saldoe.getIdEmpleado(),saldoe.getNrosaldo(),saldoe.getFecha(),saldoe.getSaldo()});    
+    }
+  @Override
+    public Saldoemp  getSaldoDelEmpleado(int idemp, int nros){
+      String q = "SELECT * FROM saldosemp WHERE idEmpleado=? AND nrosaldo=?";
+      try {
+        Saldoemp saldoemp = jdbcTemplate.queryForObject(q,
+            BeanPropertyRowMapper.newInstance(Saldoemp.class), idemp,nros);          
+        return saldoemp;
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return null;
+      }
+    }
+     @Override
+    // actualiza el saldo inicial del Empleado en la tabla "empleados"
+    public int actSaldoInicialEmp(Saldoemp saldoe){
+    
+    int resu = 0;
+    try {                   
+        resu = jdbcTemplate.update("UPDATE empleados SET saldoini=? WHERE idEmpleado=?",
+                                 
+            new Object[] { saldoe.getSaldo(),saldoe.getIdEmpleado()});
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return -3;
+    }
+    return resu; 
+    }
+     @Override
+    // actualiza el saldo un saldo del Empleado en la tabla saldosemp"
+    public int actSaldodelEmpleado(Saldoemp saldoe){
+    
+    int resu = 0;
+    try {                   
+        resu = jdbcTemplate.update("UPDATE saldosemp SET fecha=?,saldo=? WHERE idEmpleado=? AND nrosaldo=?",
+                                 
+            new Object[] { saldoe.getFecha(),saldoe.getSaldo(),saldoe.getIdEmpleado(),saldoe.getNrosaldo()});
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return -3;
+    }
+    return resu; 
+    }
+
+
+    // PROVEEDORES
+     // PROVEEDORES
+   @Override
+   public List<Proveedor> AllProvs(){
+      String selec = "SELECT * FROM proveedores ORDER BY nombre ASC";
+      return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Proveedor.class));
+   }
+   @Override
+   public Proveedor findProvById(int nroprov){
+    String q = "SELECT * FROM  proveedores WHERE idProv=?";
+    try {
+      Proveedor prove  = jdbcTemplate.queryForObject(q,
+          BeanPropertyRowMapper.newInstance(Proveedor.class), nroprov);          
+      return prove;
+    } catch (IncorrectResultSizeDataAccessException e) {
+      return null;
+    }
+   }
+   public int saveProv(Proveedor prov){
+   // Graba nuevo registro de Proveedor 
+     return jdbcTemplate.update("INSERT INTO proveedores(idProv,nombre,domicilio,localidad,telefono,"+
+                                "email,notas,saldoini) "+
+                                "VALUES(?,?,?,?,?,?,?,?)",
+                                    
+         new Object[] { prov.getIdProv(),prov.getNombre(),prov.getDomicilio(),prov.getLocalidad(),prov.getTelefono(),
+                        prov.getEmail(),prov.getNotas(),prov.getSaldoini(),
+                         });    
+   }
+   public int actualizarProv(Proveedor prove){
+   int resu = 0;
+   try {
+    resu = jdbcTemplate.update("UPDATE proveedores SET nombre=?,domicilio=?,localidad=?,telefono=?,"+
+                                "email=?,notas=?,saldoini=? WHERE idProv=?",                                
+                                    
+         new Object[] { prove.getNombre(),prove.getDomicilio(),prove.getLocalidad(),prove.getTelefono(),
+                        prove.getEmail(),prove.getNotas(),prove.getSaldoini(),prove.getIdProv()
+                         });    
+
+   } catch (IncorrectResultSizeDataAccessException e) {
+     return -3;
+   }
+   return resu;   
+   }
+   public int actSaldoIniProv(Saldoprov saldoprov){
+   // actualiza el saldo inicial del Proveedor en la tabla "proveedores"       
+    int resu = 0;
+    try {                   
+        resu = jdbcTemplate.update("UPDATE proveedores SET saldoini=? WHERE idProv=?",
+                                 
+            new Object[] { saldoprov.getSaldo(),saldoprov.getIdProv()});
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return -3;
+    }
+    return resu; 
+    }
+  @Override
+  public int getMaxIdProv(){
+    String consulta = "SELECT MAX(idProv) FROM proveedores";
+ 
+    Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+    if (obj==null){
+      return 0;
+    } else {
+      return ((int)obj);
+    }         
+  } 
+  @Override
+  public int deleteProveedor(int idprov){
+   int resu = 0;
+   try {
+     resu = jdbcTemplate.update("DELETE FROM proveedores WHERE idProv=?",idprov);
+   } catch (DataAccessException dae){
+     resu = -5;   
+   }
+   return resu;
+ }
 
    
   
