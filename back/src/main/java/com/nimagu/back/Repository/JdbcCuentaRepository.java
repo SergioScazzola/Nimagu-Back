@@ -54,9 +54,10 @@ public class JdbcCuentaRepository implements DegrosCuentaRepository{
 @Override
 public int getExisteCBUPer(String per, String cbuu){
 
-  String selec = "SELECT idCuenta FROM cuentasb WHERE periodo=? AND cbu=?";
-  Integer conta = jdbcTemplate.queryForObject(selec,Integer.class,per,cbuu);    
-  if (conta==null || conta==0){
+  String selec = "SELECT COUNT(idCuenta) FROM cuentasb WHERE periodo=? AND cbu=?";
+  int conta = 0;
+  conta = jdbcTemplate.queryForObject(selec,Integer.class,per,cbuu);    
+  if (conta==0){
     return 0;
   } else {
     return conta;
@@ -68,10 +69,11 @@ public int getExisteCBUPer(String per, String cbuu){
 public int saveCuenta(CuentaB cuenta){
         // Graba nueva cuenta Bancaria
         return jdbcTemplate.update("INSERT INTO cuentasb(idCuenta,periodo,titular,banco,cbu,"+
-                                   "fecsaldo,saldoini,saldofin,observ) "+
-                                   "VALUES(?,?,?,?,?,?,?,?,?)",
+                                   "fecsaldo,saldoini,saldofin,cantmovs,observ) "+
+                                   "VALUES(?,?,?,?,?,?,?,?,?,?)",
         new Object[] { cuenta.getIdCuenta(),cuenta.getPeriodo(),cuenta.getTitular(),cuenta.getBanco(),cuenta.getCbu(),
-                       cuenta.getFecsaldo(),cuenta.getSaldoini(),cuenta.getSaldofin(),cuenta.getObserv() });
+                       cuenta.getFecsaldo(),cuenta.getSaldoini(),cuenta.getSaldofin(),
+                       cuenta.getCantmovs(),cuenta.getObserv() });
          
       }
 
@@ -93,11 +95,12 @@ public CuentaB findCuentaById(int idcuenta) {
       int resu = 0;
       try {                   
           resu = jdbcTemplate.update("UPDATE cuentasb SET periodo=?,titular=?,banco=?,cbu=?,"+
-                                    "fecsaldo=?,saldoini=?,saldofin=?,observ=?"+
+                                    "fecsaldo=?,saldoini=?,saldofin=?,cantmovs=?,observ=?"+
                                     " WHERE idCuenta=?",
                     new Object[] { cuenta.getPeriodo(),cuenta.getTitular(),cuenta.getBanco(),
                                    cuenta.getCbu(),cuenta.getFecsaldo(),cuenta.getSaldoini(),
-                                   cuenta.getSaldofin(),cuenta.getObserv(),cuenta.getIdCuenta()                               
+                                   cuenta.getSaldofin(),cuenta.getCantmovs(),
+                                   cuenta.getObserv(),cuenta.getIdCuenta()                               
                                 });
         } catch (IncorrectResultSizeDataAccessException e) {
           return -3;

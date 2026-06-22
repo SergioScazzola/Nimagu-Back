@@ -34,15 +34,15 @@ public class CuentasController {
     @Autowired
     DegrosCuentaRepository degrosctarepo;
 
-    @SuppressWarnings("null")
+    //@SuppressWarnings("null")
     @GetMapping("/cuentasb")
     public ResponseEntity<List<CuentaB>> getAllCuentasb() {
-    List<CuentaB> cuentas = null;
+    List<CuentaB> cuentas = null;   
     try {
-                  
+                 
       cuentas = degrosctarepo.AllCuentasb();
     
-      if (cuentas.isEmpty()) {
+      if (cuentas==null || cuentas.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       } else {
          return new ResponseEntity<>(cuentas, HttpStatus.OK);
@@ -60,7 +60,7 @@ public class CuentasController {
 
    @RequestMapping(value="/cuentasb/existecbuper",params={"periodo","cbu"})
   public int getExisteCbuPeriodo(@RequestParam("periodo") String per,
-                                     @RequestParam("cbu") String cbuu){
+                                 @RequestParam("cbu") String cbuu){    
      int ncta = degrosctarepo.getExisteCBUPer(per,cbuu);
      return ncta;
   }

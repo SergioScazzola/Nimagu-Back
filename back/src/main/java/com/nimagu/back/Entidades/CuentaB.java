@@ -11,6 +11,7 @@ public class CuentaB {
    private Date     fecsaldo;
    private double   saldoini;
    private double   saldofin;
+   private int      cantmovs;
    private String   observ;    
 
    public CuentaB(){}
@@ -86,6 +87,12 @@ public class CuentaB {
    public void setSaldofin(double saldofin) {
       this.saldofin = saldofin;
    };
+  public int getCantmovs() {
+      return cantmovs;
+   }
 
+   public void setCantmovs(int cantmovs) {
+      this.cantmovs = cantmovs;
+   }
    
 }

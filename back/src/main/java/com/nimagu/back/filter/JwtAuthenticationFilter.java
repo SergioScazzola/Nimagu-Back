@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request, 
             HttpServletResponse response, 
             FilterChain filterChain) throws ServletException, IOException {
-        
+       
         try {
             // Permitir solicitudes OPTIONS para CORS preflight
             if ("OPTIONS".equals(request.getMethod())) {
@@ -57,6 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             
             String token = getTokenFromRequest(request);
+            System.out.println("TOKEN PRESENTE: " + (token != null));
             if (token != null && validateToken(token)) {
                 setUpSpringAuthentication(token);
             } else if (token == null) {
