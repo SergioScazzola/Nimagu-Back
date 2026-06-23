@@ -9,11 +9,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.nimagu.back.Entidades.Cliente;
-
-import com.nimagu.back.Entidades.Empleado;
+import com.nimagu.back.Entidades.Cobranza;
+import com.nimagu.back.Entidades.Detcobro;
+import com.nimagu.back.Entidades.Detpago;
+import com.nimagu.back.Entidades.Pago;
 import com.nimagu.back.Entidades.Proveedor;
 import com.nimagu.back.Entidades.Saldocli;
-import com.nimagu.back.Entidades.Saldoemp;
+
 import com.nimagu.back.Entidades.Saldoprov;
 
     
@@ -154,125 +156,6 @@ import com.nimagu.back.Entidades.Saldoprov;
     return resu; 
     }
 
-   
-    
-    // EMPLEADOS
-    @Override
-    public List<Empleado> AllEmpleados() {   
-      String selec = "SELECT * FROM empleados ORDER BY nomEmpleado";
-      return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Empleado.class));
-    }
-
-   
-
-    @Override
-    public int getMaxEmpleados(){
-      String consulta = "SELECT MAX(idEmpleado) FROM empleados";
-   
-      Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
-      if (obj==null){
-        return 0;
-      } else {
-        return ((int)obj);
-      }         
-    }
-    @Override
-    public Empleado findEmpleadoById(int id) {
-      String q = "SELECT * FROM empleados WHERE idEmpleado=?";
-      try {
-        Empleado empleado = jdbcTemplate.queryForObject(q,
-            BeanPropertyRowMapper.newInstance(Empleado.class), id);          
-        return empleado;
-      } catch (IncorrectResultSizeDataAccessException e) {
-        return null;
-      }
-    }
-
-    @Override
-    public int saveEmpleado(Empleado empleado){
-    // Graba nuevo Empleado autonumerado
-        return jdbcTemplate.update("INSERT INTO empleados(idEmpleado,nomEmpleado,dni,domicilio,telefono,notas,saldoini) "+
-                                   "VALUES(?,?,?,?,?,?,?)",
-            new Object[] { empleado.getIdEmpleado(),empleado.getNomEmpleado(),empleado.getDni(),empleado.getDomicilio(),empleado.getTelefono(),
-                           empleado.getNotas(),empleado.getSaldoini()});    
-    }
-
-    @Override
-    public int actualizarEmpleado(int nroemp, Empleado empleado ){
-    // Actualizar el Empleado
-    int resu = 0;
-    try {                   
-        resu = jdbcTemplate.update("UPDATE empleados SET nomEmpleado=?,dni=?,domicilio=?,telefono=?,"+
-                                  "notas=?,saldoini=? WHERE idEmpleado=?",                                 
-            new Object[] { empleado.getNomEmpleado(),empleado.getDni(),empleado.getDomicilio(),
-                           empleado.getTelefono(),empleado.getNotas(),empleado.getSaldoini(),empleado.getIdEmpleado()});
-      } catch (IncorrectResultSizeDataAccessException e) {
-        return -3;
-    }
-    return resu; 
-    }
-    public int deleteEmpleado(int idemp){
-      int resu = 0;
-      try {
-        resu = jdbcTemplate.update("DELETE FROM empleados WHERE idEmpleado="+idemp);
-      } catch (DataAccessException dae){
-        resu = -5;   
-      }
-      return resu;
-    }  
-    @Override
-    // Devuelve todos los saldos registrados del empleado ordenados por fecha
-    public List<Saldoemp> getSaldosPorEmpleado(int nroemp) {   
-      String selec = "SELECT * FROM saldosemp WHERE idEmpleado=? ORDER BY fecha";
-      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Saldoemp.class),nroemp);
-    }
-   @Override
-    public int saveSaldoEmpleado(Saldoemp saldoe){
-    // Graba un nuevo saldo para el Empleado
-        return jdbcTemplate.update("INSERT INTO saldosemp(idEmpleado,nrosaldo,fecha,saldo) "+
-                                   "VALUES(?,?,?,?)",
-            new Object[] { saldoe.getIdEmpleado(),saldoe.getNrosaldo(),saldoe.getFecha(),saldoe.getSaldo()});    
-    }
-  @Override
-    public Saldoemp  getSaldoDelEmpleado(int idemp, int nros){
-      String q = "SELECT * FROM saldosemp WHERE idEmpleado=? AND nrosaldo=?";
-      try {
-        Saldoemp saldoemp = jdbcTemplate.queryForObject(q,
-            BeanPropertyRowMapper.newInstance(Saldoemp.class), idemp,nros);          
-        return saldoemp;
-      } catch (IncorrectResultSizeDataAccessException e) {
-        return null;
-      }
-    }
-     @Override
-    // actualiza el saldo inicial del Empleado en la tabla "empleados"
-    public int actSaldoInicialEmp(Saldoemp saldoe){
-    
-    int resu = 0;
-    try {                   
-        resu = jdbcTemplate.update("UPDATE empleados SET saldoini=? WHERE idEmpleado=?",
-                                 
-            new Object[] { saldoe.getSaldo(),saldoe.getIdEmpleado()});
-      } catch (IncorrectResultSizeDataAccessException e) {
-        return -3;
-    }
-    return resu; 
-    }
-     @Override
-    // actualiza el saldo un saldo del Empleado en la tabla saldosemp"
-    public int actSaldodelEmpleado(Saldoemp saldoe){
-    
-    int resu = 0;
-    try {                   
-        resu = jdbcTemplate.update("UPDATE saldosemp SET fecha=?,saldo=? WHERE idEmpleado=? AND nrosaldo=?",
-                                 
-            new Object[] { saldoe.getFecha(),saldoe.getSaldo(),saldoe.getIdEmpleado(),saldoe.getNrosaldo()});
-      } catch (IncorrectResultSizeDataAccessException e) {
-        return -3;
-    }
-    return resu; 
-    }
-
 
     // PROVEEDORES
      // PROVEEDORES
@@ -351,7 +234,306 @@ import com.nimagu.back.Entidades.Saldoprov;
    return resu;
  }
 
+ // COBRANZA de Clientes
+
+   @Override
+   public List<Cobranza> AllCobranza() {   
+     String selec = "SELECT * FROM cobranza ORDER BY fecha DESC";
+     return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Cobranza.class));
+   }
+
+  
+   @Override
+   public List<Cobranza> AllCobranzaPorCliente(int nrocli) {   
+     String selec = "SELECT * FROM cobranza WHERE idCliente=? ORDER BY fecha DESC";
+     return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Cobranza.class),nrocli);
+   }
+
+   @Override
+   public int getMaxCobranza(){
+     String consulta = "SELECT MAX(idCobro) FROM cobranza";
+  
+     Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+     if (obj==null){
+       return 0;
+     } else {
+       return ((int)obj);
+     }         
+   }
+   @Override
+   public Cobranza findCobranzaById(int nrocob){
+     String q = "SELECT * FROM  cobranza WHERE idCobro=?";
+     try {
+       Cobranza cobranza  = jdbcTemplate.queryForObject(q,
+           BeanPropertyRowMapper.newInstance(Cobranza.class), nrocob);          
+       return cobranza;
+     } catch (IncorrectResultSizeDataAccessException e) {
+       return null;
+     }
+   } 
+
+  @Override
+  public int saveCobranza(Cobranza cobranza){
+  // Graba nueva cobranza 
+      return jdbcTemplate.update("INSERT INTO cobranza(idCobro,fecha,idCliente,nomcliente,nrofactura,importe,"+
+                                 "nroventa,observaciones) "+
+                                 "VALUES(?,?,?,?,?,?,?,?)",
+          new Object[] { cobranza.getIdCobro(),cobranza.getFecha(),cobranza.getIdCliente(),
+                         cobranza.getNomcliente(),cobranza.getNrofactura(),
+                         cobranza.getImporte(),cobranza.getNroventa(),cobranza.getObservaciones() });    
+  }
+
+  @Override
+  public int actualizarCobranza(Cobranza cobranza){
+  
+  int resu = 0;
+  try {                   
+      resu = jdbcTemplate.update("UPDATE cobranza SET fecha=?,idCliente=?,nomcliente=?,nrofactura=?,importe=?,"+
+                                 "nroventa=?,observaciones=? WHERE idCobro=?",
+          new Object[] { cobranza.getFecha(),cobranza.getIdCliente(),cobranza.getNomcliente(),
+                         cobranza.getNrofactura(),cobranza.getImporte(),cobranza.getNroventa(),
+                         cobranza.getObservaciones(),cobranza.getIdCobro() });    
+    } catch (IncorrectResultSizeDataAccessException e) {
+      return -3;
+  }
+  return resu; 
+  }
+  @Override
+  public int deleteCobranza(int idcobro){
+    int resu = 0;
+    try {
+      resu = jdbcTemplate.update("DELETE FROM cobranza WHERE idCobro="+idcobro);
+    } catch (DataAccessException dae){
+      resu = -5;   
+    }
+    return resu;
+  }
+
+  // DETALLE DE COBRANZAS
+
+ /* @Override
+  public List<InfoDetCobro> infoDetCobranza(String fecini, String fecfin){
+    String selec = "SELECT  cobranza.idCobro,"+
+                   "cobranza.fecha,cobranza.idCliente,cobranza.nomcliente,"+
+                   "cobranza.nrofactura,cobranza.importe AS impcobro,"+
+                   "detcobro.nmpago,detcobro.nrompago,detcobro.banco,detcobro.fecha AS fecemi,detcobro.fecvto,"+
+                   "detcobro.importe AS impitem,detcobro.comentario AS coment "+
+                   "FROM cobranza JOIN detcobro ON cobranza.idCobro = detcobro.idCobro "+
+	                 "WHERE cobranza.fecha BETWEEN ? AND ? "+		               
+	                 "ORDER BY nomcliente ASC, idCobro ASC";
+                   
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(InfoDetCobro.class),fecini,fecfin);
+
+  }*/
+  @Override
+  public List<Detcobro> AllDetCobroPorId(int nrocobro) {   
+    String selec = "SELECT * FROM detcobro WHERE idCobro=? ORDER BY nroitem";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Detcobro.class),nrocobro);
+  }
+
+  @Override
+   public int getCantDetCobrosPorId(int nrocobro){
+     String consulta = "SELECT MAX(idCobro) FROM detcobro WHERE idCobro="+nrocobro;
+  
+     Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+     if (obj==null){
+       return 0;
+     } else {
+       return ((int)obj);
+     }         
+   }
    
+   @Override
+   public int saveItemDetCobro(Detcobro detcobro){
+   // Graba nuevo item de cobro
+       return jdbcTemplate.update("INSERT INTO detcobro(idCobro,nroitem,idmpago,nmpago,fecha,nrompago,banco,"+
+                                  " fecvto,importe,ctadest,comentario) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+           new Object[] { detcobro.getIdCobro(),detcobro.getNroitem(),detcobro.getIdmpago(),detcobro.getNmpago(),
+                          detcobro.getFecha(),detcobro.getNrompago(),detcobro.getBanco(),detcobro.getFecvto(),
+                          detcobro.getImporte(),detcobro.getCtadest(),detcobro.getComentario() });    
+   }
+
+   @Override
+   public int actualizarItemDetCobro(Detcobro detcobro){
+   
+   int resu = 0;
+   try {                   
+       resu = jdbcTemplate.update("UPDATE detcobro SET idmpago=?,nmpago=?,fecha=?,nrompago=?,banco=?,"+
+                                  "fecvto=?,importe=?,ctadest,comentario=? WHERE idCobro=? AND nroitem=?",
+           new Object[] { detcobro.getIdmpago(),detcobro.getNmpago(),detcobro.getFecha(),detcobro.getNrompago(),
+                          detcobro.getBanco(),detcobro.getFecvto(),detcobro.getImporte(),detcobro.getCtadest(),
+                          detcobro.getComentario(),detcobro.getIdCobro(),detcobro.getNroitem() });    
+     } catch (IncorrectResultSizeDataAccessException e) {
+       return -3;
+   }
+   return resu; 
+   }
+
+   @Override
+   public Detcobro findItemDetCobro(int nrocobro,int nroit){
+     String q = "SELECT * FROM  detcobro WHERE idCobro=? AND nroitem=?";
+     try {
+       Detcobro detcobro  = jdbcTemplate.queryForObject(q,
+           BeanPropertyRowMapper.newInstance(Detcobro.class), nrocobro,nroit);          
+       return detcobro;
+     } catch (IncorrectResultSizeDataAccessException e) {
+       return null;
+     }
+   } 
+
+   // PAGOS a Proveedores
+
+   @Override
+   public List<Pago> AllPagos() {   
+     String selec = "SELECT * FROM pagos ORDER BY fecha DESC";
+     return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Pago.class));
+   }
+
+  
+   @Override
+   public List<Pago> AllPagosPorProveedor(int nrocli) {   
+     String selec = "SELECT * FROM pagos WHERE idProv=? ORDER BY fecha DESC";
+     return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Pago.class),nrocli);
+   }
+
+   @Override
+   public int getMaxPagos(){
+     String consulta = "SELECT MAX(idPago) FROM pagos";
+  
+     Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+     if (obj==null){
+       return 0;
+     } else {
+       return ((int)obj);
+     }         
+   }
+   @Override
+   public Pago findPagoById(int nropag){
+     String q = "SELECT * FROM  pagos WHERE idPago=?";
+     try {
+       Pago pago  = jdbcTemplate.queryForObject(q,
+           BeanPropertyRowMapper.newInstance(Pago.class), nropag);          
+       return pago;
+     } catch (IncorrectResultSizeDataAccessException e) {
+       return null;
+     }
+   } 
+
+  @Override
+  public int savePago(Pago pago){
+  // Graba nueva cobranza 
+      return jdbcTemplate.update("INSERT INTO pagos(idPago,fecha,idProv,nomprov,nrofactura,importe,"+
+                                 "nroegreso,observaciones) "+
+                                 "VALUES(?,?,?,?,?,?,?,?)",
+          new Object[] { pago.getIdPago(),pago.getFecha(),pago.getIdProv(),pago.getNomprov(),
+                         pago.getNrofactura(),pago.getImporte(),pago.getNroegreso(),
+                         pago.getObservaciones()
+          });    
+  }
+
+  @Override
+  public int actualizarPago(Pago pago){
+  
+  int resu = 0;
+  try {                   
+      resu = jdbcTemplate.update("UPDATE pagos SET fecha=?,idProv=?,nomprov=?,nrofactura=?,importe=?,"+
+                                 "nroegreso=?,observaciones=? WHERE idPago=?",
+          new Object[] { pago.getFecha(),pago.getIdProv(),pago.getNomprov(),
+                         pago.getNrofactura(),pago.getImporte(),pago.getNroegreso(),
+                         pago.getObservaciones(),pago.getIdPago() });    
+    } catch (IncorrectResultSizeDataAccessException e) {
+      return -3;
+  }
+  return resu; 
+  }
+  @Override
+  public int deletePago(int idpago){
+    int resu = 0;
+    try {
+      resu = jdbcTemplate.update("DELETE FROM pagos WHERE idPago="+idpago);
+    } catch (DataAccessException dae){
+      resu = -5;   
+    }
+    return resu;
+  }
+
+  // DETALLE DE PAGOS
+
+ /* @Override
+  public List<InfoDetCobro> infoDetCobranza(String fecini, String fecfin){
+    String selec = "SELECT  cobranza.idCobro,"+
+                   "cobranza.fecha,cobranza.idCliente,cobranza.nomcliente,"+
+                   "cobranza.nrofactura,cobranza.importe AS impcobro,"+
+                   "detcobro.nmpago,detcobro.nrompago,detcobro.banco,detcobro.fecha AS fecemi,detcobro.fecvto,"+
+                   "detcobro.importe AS impitem,detcobro.comentario AS coment "+
+                   "FROM cobranza JOIN detcobro ON cobranza.idCobro = detcobro.idCobro "+
+	                 "WHERE cobranza.fecha BETWEEN ? AND ? "+		               
+	                 "ORDER BY nomcliente ASC, idCobro ASC";
+                   
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(InfoDetCobro.class),fecini,fecfin);
+
+  }*/
+  @Override
+  public List<Detpago> AllDetPagoPorId(int nropago) {   
+    String selec = "SELECT * FROM detpago WHERE idPago=? ORDER BY nroitem";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Detpago.class),nropago);
+  }
+
+  @Override
+   public int getCantDetPagosPorId(int nropago){
+     String consulta = "SELECT MAX(idPago) FROM detpago WHERE idPago="+nropago;
+  
+     Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+     if (obj==null){
+       return 0;
+     } else {
+       return ((int)obj);
+     }         
+   }
+   
+   @Override
+   public int saveItemDetPago(Detpago detpago){
+   // Graba nuevo item de cobro
+       return jdbcTemplate.update("INSERT INTO detpago(idPago,nroitem,idmpago,nmpago,fecha,nrompago,banco,"+
+                                  " fecvto,importe,ctadest,comentario) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+           new Object[] {detpago.getIdPago(),detpago.getNroitem(),detpago.getIdmpago(),
+                         detpago.getNmpago(),detpago.getFecha(),detpago.getNrompago(),
+                         detpago.getBanco(),detpago.getFecvto(),detpago.getImporte(),
+                         detpago.getCtadest(),detpago.getComentario()
+            });    
+   }
+
+   @Override
+   public int actualizarItemDetPago(Detpago detpago){
+   
+   int resu = 0;
+   try {                   
+       resu = jdbcTemplate.update("UPDATE detpago SET idmpago=?,nmpago=?,fecha=?,nrompago=?,banco=?,"+
+                                  "fecvto=?,importe=?,ctadest,comentario=? WHERE idPago=? AND nroitem=?",
+           new Object[] { detpago.getIdPago(),detpago.getNroitem(),detpago.getIdmpago(),
+                          detpago.getNmpago(),detpago.getFecha(),detpago.getNrompago(),
+                          detpago.getBanco(),detpago.getFecvto(),detpago.getImporte(),
+                          detpago.getCtadest(),detpago.getComentario() });    
+     } catch (IncorrectResultSizeDataAccessException e) {
+       return -3;
+   }
+   return resu; 
+   }
+
+   @Override
+   public Detpago findItemDetPago(int nropago,int nroit){
+     String q = "SELECT * FROM  detpago WHERE idPago=? AND nroitem=?";
+     try {
+       Detpago detpago  = jdbcTemplate.queryForObject(q,
+           BeanPropertyRowMapper.newInstance(Detpago.class), nropago,nroit);          
+       return detpago;
+     } catch (IncorrectResultSizeDataAccessException e) {
+       return null;
+     }
+   } 
+    
+
+  
   
 }
     

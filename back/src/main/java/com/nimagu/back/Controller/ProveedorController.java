@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.Sisbul.ApiRrest.entidades.Proveedor;
-import com.Sisbul.ApiRrest.entidades.Saldoprov;
-import com.Sisbul.ApiRrest.repository.JdbcDegrosRepository;
+import com.nimagu.back.Entidades.Proveedor;
+import com.nimagu.back.Entidades.Saldoprov;
+import com.nimagu.back.Repository.JdbcDegrosRepository;
 
 @CrossOrigin(origins = "${FRONTEND_URL}")
 @RestController
@@ -32,9 +32,8 @@ public class ProveedorController {
     @SuppressWarnings("null")
     @GetMapping("/proveeds")
     public ResponseEntity<List<Proveedor>> getProveedores() {
-    try {
-      List<Proveedor> proves = null;
-            
+    List<Proveedor> proves = null;
+    try {                  
       proves = degrosRepository.AllProvs();
     
       if (proves.isEmpty()) {
@@ -43,7 +42,7 @@ public class ProveedorController {
          return new ResponseEntity<>(proves, HttpStatus.OK);
       }
     } catch (Exception e) {
-       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+       return new ResponseEntity<>(proves, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
   @RequestMapping(value ="/prov" , params={"id"} )
