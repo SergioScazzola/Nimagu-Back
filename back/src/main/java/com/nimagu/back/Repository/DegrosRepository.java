@@ -10,6 +10,9 @@ import com.nimagu.back.Entidades.Cliente;
 import com.nimagu.back.Entidades.Cobranza;
 import com.nimagu.back.Entidades.Detcobro;
 import com.nimagu.back.Entidades.Detpago;
+import com.nimagu.back.Entidades.Egreso;
+import com.nimagu.back.Entidades.Ingreso;
+import com.nimagu.back.Entidades.MedioPago;
 import com.nimagu.back.Entidades.Pago;
 import com.nimagu.back.Entidades.Saldoprov;
 
@@ -55,8 +58,8 @@ import com.nimagu.back.Entidades.Saldocli;
         int actualizarItemDetCobro(Detcobro detcobro);    
         Detcobro findItemDetCobro(int idcob, int iditem);
        
-        List<Saldoprov> getSaldosPorProv(int nprov);
-        int saveSaldoProv(Saldoprov saldop);
+        //List<Saldoprov> getSaldosPorProv(int nprov);
+        //int saveSaldoProv(Saldoprov saldop);
         //int actSaldodelProv(Saldoprov saldop);
         //Saldoprov getSaldoDelProv(int idprov, int nros);
         
@@ -72,6 +75,24 @@ import com.nimagu.back.Entidades.Saldocli;
         int saveItemDetPago(Detpago detpago);
         int actualizarItemDetPago(Detpago detpago);
         Detpago findItemDetPago(int idpag, int iditem);
+
+        List<Ingreso> AllIngresos();        
+        int getMaxIngresos();  
+        Ingreso findIngresoById(int nroing);
+        int saveIngreso(Ingreso ingreso);        
+        int actualizarIngreso(int idingreso,Ingreso ingreso);    
+        int deleteIngreso(int idingreso);
+        List<Ingreso> getIngresosXCliente(int nrocli);  
+        List<MedioPago> getMediosPago();              
+
+        List<Egreso> AllEgresos();
+        int getMaxEgresos();  
+        Egreso findEgresoById(int nroing);
+        int saveEgreso(Egreso egreso);        
+        int actualizarEgreso(int idingreso,Egreso egreso);    
+        int deleteEgreso(int idingreso);
+        List<Egreso> getEgresosXProv(int nroprov);
+
 
     }
     

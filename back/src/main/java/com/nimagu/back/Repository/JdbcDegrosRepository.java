@@ -12,6 +12,9 @@ import com.nimagu.back.Entidades.Cliente;
 import com.nimagu.back.Entidades.Cobranza;
 import com.nimagu.back.Entidades.Detcobro;
 import com.nimagu.back.Entidades.Detpago;
+import com.nimagu.back.Entidades.Egreso;
+import com.nimagu.back.Entidades.Ingreso;
+import com.nimagu.back.Entidades.MedioPago;
 import com.nimagu.back.Entidades.Pago;
 import com.nimagu.back.Entidades.Proveedor;
 import com.nimagu.back.Entidades.Saldocli;
@@ -65,12 +68,7 @@ import com.nimagu.back.Entidades.Saldoprov;
             new Object[] { cliente.getIdCliente(),cliente.getNombre(),cliente.getTelefono(),cliente.getContacto(),cliente.getCuit(),
                           cliente.getNotas(),cliente.getSaldoini()});    
     }
-
-
-    
-    
-   
-
+        
     @Override
     public int actualizarCliente(int idcliente,Cliente cliente){    
     int resu = 0;
@@ -532,7 +530,172 @@ import com.nimagu.back.Entidades.Saldoprov;
      }
    } 
     
+// INGRESOS de clientes
 
+  @Override
+    public List<Ingreso> AllIngresos() {   
+      String selec = "SELECT * FROM ingresos ORDER BY fecha ASC";
+      return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Ingreso.class));
+    }
+
+    
+    @Override
+    public int getMaxIngresos(){
+      String consulta = "SELECT MAX(idIngreso) FROM ingresos";
+   
+      Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+      if (obj==null){
+        return 0;
+      } else {
+        return ((int)obj);
+      }         
+    }
+    @Override
+    public Ingreso findIngresoById(int id) {
+      String q = "SELECT * FROM ingresos WHERE idIngreso=?";
+      try {
+        Ingreso ingreso = jdbcTemplate.queryForObject(q,
+            BeanPropertyRowMapper.newInstance(Ingreso.class), id);          
+        return ingreso;
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return null;
+      }
+    }
+
+    @Override
+    public int saveIngreso(Ingreso ing){
+    // Graba nuevo Cliente 
+        return jdbcTemplate.update("INSERT INTO ingresos(idIngreso,fecha,idcliente,ncliente,"+
+                                   "nroliq,idcat,categoria,cantidad,tkilos,precioun,importe,"+
+                                   "proced,idcobro,observ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      
+            new Object[] {ing.getIdIngreso(),ing.getFecha(),ing.getIdcliente(),ing.getNcliente(),
+                          ing.getNroliq(),ing.getIdcat(),ing.getCategoria(),ing.getCantidad(),
+                          ing.getTkilos(),ing.getPrecioun(),ing.getImporte(),ing.getProced(),
+                          ing.getIdcobro(),ing.getObserv()
+            });    
+    }
+        
+    @Override
+    public int actualizarIngreso(int idingreso, Ingreso ing){    
+    int resu = 0;
+    try {                   
+        resu = jdbcTemplate.update("UPDATE ingresos SET fecha=?,idcliente=?,ncliente=?,"+
+                                   "nroliq=?,idcat=?,categoria=?,cantidad=?,tkilos=?,precioun=?,"+
+                                   "importe=?,proced=?,idcobro=?,observ=? "+
+                                   "WHERE idIngreso=?",
+                                 
+            new Object[] {ing.getFecha(),ing.getIdcliente(),ing.getNcliente(),
+                          ing.getNroliq(),ing.getIdcat(),ing.getCategoria(),ing.getCantidad(),
+                          ing.getTkilos(),ing.getPrecioun(),ing.getImporte(),ing.getProced(),
+                          ing.getIdcobro(),ing.getObserv(),ing.getIdIngreso() });
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return -3;
+    }
+    return resu; 
+    }
+    @Override
+    public int deleteIngreso(int idingreso){
+      int resu = 0;
+      try {
+        resu = jdbcTemplate.update("DELETE FROM ingresos WHERE idIngreso="+idingreso);
+      } catch (DataAccessException dae){
+        resu = -5;   
+      }
+      return resu;
+    }    
+    @Override
+    public List<Ingreso> getIngresosXCliente(int nrocli){
+      String selec = "SELECT * FROM ingresos WHERE idcliente=? ORDER BY fecha DESC LIMIT 30";
+      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Ingreso.class),nrocli);
+
+     }
+
+    public List<MedioPago> getMediosPago(){
+      String selec = "SELECT * FROM mediospago ORDER BY idmpago ASC";
+      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(MedioPago.class));
+    }
+
+    // EGRESOS a proveedores
+
+  @Override
+    public List<Egreso> AllEgresos() {   
+      String selec = "SELECT * FROM egresos ORDER BY fecha ASC";
+      return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Egreso.class));
+    }
+
+    
+    @Override
+    public int getMaxEgresos(){
+      String consulta = "SELECT MAX(idEgreso) FROM egresos";
+   
+      Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+      if (obj==null){
+        return 0;
+      } else {
+        return ((int)obj);
+      }         
+    }
+    @Override
+    public Egreso findEgresoById(int id) {
+      String q = "SELECT * FROM egresos WHERE idEgreso=?";
+      try {
+        Egreso egreso = jdbcTemplate.queryForObject(q,
+            BeanPropertyRowMapper.newInstance(Egreso.class), id);          
+        return egreso;
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return null;
+      }
+    }
+
+    @Override
+    public int saveEgreso(Egreso egr){
+    // Graba nuevo Egreso
+        return jdbcTemplate.update("INSERT INTO egresos(idEgreso,fecha,idprov,nprov,"+
+                                   "nroliq,idcat,categoria,cantidad,tkilos,precioun,importe,"+
+                                   "proced,idpago,observ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      
+            new Object[] {egr.getIdEgreso(),egr.getFecha(),egr.getIdprov(),egr.getNprov(),
+                          egr.getNroliq(),egr.getIdcat(),egr.getCategoria(),egr.getCantidad(),
+                          egr.getTkilos(),egr.getPrecioun(),egr.getImporte(),egr.getProced(),
+                          egr.getIdpago(),egr.getObserv()
+            });    
+    }
+        
+    @Override
+    public int actualizarEgreso(int idegreso, Egreso egr){    
+    int resu = 0;
+    try {                   
+        resu = jdbcTemplate.update("UPDATE egresos SET fecha=?,idprov=?,nprov=?,"+
+                                   "nroliq=?,idcat=?,categoria=?,cantidad=?,tkilos=?,precioun=?,"+
+                                   "importe=?,proced=?,idpago=?,observ=? "+
+                                   "WHERE idEgreso=?",
+                                 
+            new Object[] {egr.getFecha(),egr.getIdprov(),egr.getNprov(),
+                          egr.getNroliq(),egr.getIdcat(),egr.getCategoria(),egr.getCantidad(),
+                          egr.getTkilos(),egr.getPrecioun(),egr.getImporte(),egr.getProced(),
+                          egr.getIdpago(),egr.getObserv(),egr.getIdEgreso()});
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return -3;
+    }
+    return resu; 
+    }
+    @Override
+    public int deleteEgreso(int idegreso){
+      int resu = 0;
+      try {
+        resu = jdbcTemplate.update("DELETE FROM egresos WHERE idEgreso="+idegreso);
+      } catch (DataAccessException dae){
+        resu = -5;   
+      }
+      return resu;
+    }    
+     @Override
+    public List<Egreso> getEgresosXProv(int nroprov){
+      String selec = "SELECT * FROM egresos WHERE idprov=? ORDER BY fecha DESC";
+      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Egreso.class),nroprov);
+
+     }
   
   
 }
