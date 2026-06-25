@@ -8,14 +8,17 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.nimagu.back.Entidades.Categoria;
 import com.nimagu.back.Entidades.Cliente;
 import com.nimagu.back.Entidades.Cobranza;
+import com.nimagu.back.Entidades.Dcobxcli;
 import com.nimagu.back.Entidades.Detcobro;
 import com.nimagu.back.Entidades.Detpago;
 import com.nimagu.back.Entidades.Egreso;
 import com.nimagu.back.Entidades.Ingreso;
 import com.nimagu.back.Entidades.MedioPago;
 import com.nimagu.back.Entidades.Pago;
+import com.nimagu.back.Entidades.Procedencia;
 import com.nimagu.back.Entidades.Proveedor;
 import com.nimagu.back.Entidades.Saldocli;
 
@@ -610,12 +613,49 @@ import com.nimagu.back.Entidades.Saldoprov;
       return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Ingreso.class),nrocli);
 
      }
-
+     @Override
+    public  List<Dcobxcli> DetCobroPorCliyF(int idcli,String fechi, String fechf){
+      String selec = "SELECT " + 
+                "c.idCobro," + 
+                "c.fecha AS fechaCobro,"+
+                "c.idCliente,"+ 
+                "c.nomcliente,"+
+                "c.nrofactura,"+
+                "c.importe AS importeCobro,"+              
+                "d.nroitem," +                 
+                "d.nmpago,"+
+                "d.fecha AS fechaDetalle,"+
+                "d.nrompago,"+
+                "d.banco,"+
+                "d.fecvto,"+
+                "d.importe AS importeDetalle,"+
+                "d.ctadest,"+
+                "d.comentario "+
+                "FROM cobranza c "+
+                "INNER JOIN detcobro d "+
+                "ON c.idCobro = d.idCobro "+ 
+                "WHERE c.idCliente = :idCliente " +
+                "AND c.fecha BETWEEN ? AND ? " +                
+                "ORDER BY c.fecha, c.idCobro, d.nroitem";
+      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Dcobxcli.class),idcli,fechi,fechf);          
+    }
+    @Override
     public List<MedioPago> getMediosPago(){
       String selec = "SELECT * FROM mediospago ORDER BY idmpago ASC";
       return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(MedioPago.class));
     }
 
+    @Override
+    public List<Categoria> getCategorias(){
+      String selec = "SELECT * FROM categorias ORDER BY idCategoria ASC";
+      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Categoria.class));
+    }
+
+     @Override
+    public List<Procedencia> getProcedencias(){
+      String selec = "SELECT * FROM procedencias ORDER BY idProcedencia ASC";
+      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Procedencia.class));
+    }
     // EGRESOS a proveedores
 
   @Override

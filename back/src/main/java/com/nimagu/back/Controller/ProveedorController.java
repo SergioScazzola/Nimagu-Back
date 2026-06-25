@@ -1,4 +1,4 @@
-package com.Sisbul.ApiRrest.controller;
+package com.nimagu.back.Controller;
 
 import java.util.List;
 

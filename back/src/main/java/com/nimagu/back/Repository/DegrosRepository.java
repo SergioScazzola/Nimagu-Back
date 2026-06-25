@@ -3,17 +3,17 @@ package com.nimagu.back.Repository;
 
 import java.util.List;
 
-
-
-
+import com.nimagu.back.Entidades.Categoria;
 import com.nimagu.back.Entidades.Cliente;
 import com.nimagu.back.Entidades.Cobranza;
+import com.nimagu.back.Entidades.Dcobxcli;
 import com.nimagu.back.Entidades.Detcobro;
 import com.nimagu.back.Entidades.Detpago;
 import com.nimagu.back.Entidades.Egreso;
 import com.nimagu.back.Entidades.Ingreso;
 import com.nimagu.back.Entidades.MedioPago;
 import com.nimagu.back.Entidades.Pago;
+import com.nimagu.back.Entidades.Procedencia;
 import com.nimagu.back.Entidades.Saldoprov;
 
 import com.nimagu.back.Entidades.Proveedor;
@@ -52,6 +52,7 @@ import com.nimagu.back.Entidades.Saldocli;
         int saveCobranza(Cobranza cobranza);
         int actualizarCobranza(Cobranza cobranza);    
         int deleteCobranza(int idcobro);
+        List<Dcobxcli> DetCobroPorCliyF(int idcli,String fechi, String fechf);
         List<Detcobro> AllDetCobroPorId(int idcob);
         int getCantDetCobrosPorId(int idcob);
         int saveItemDetCobro(Detcobro detcobro);
@@ -83,7 +84,9 @@ import com.nimagu.back.Entidades.Saldocli;
         int actualizarIngreso(int idingreso,Ingreso ingreso);    
         int deleteIngreso(int idingreso);
         List<Ingreso> getIngresosXCliente(int nrocli);  
-        List<MedioPago> getMediosPago();              
+        List<MedioPago> getMediosPago();                
+        List<Categoria> getCategorias();  
+        List<Procedencia> getProcedencias();        
 
         List<Egreso> AllEgresos();
         int getMaxEgresos();  

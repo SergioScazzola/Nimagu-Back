@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Cobranza;
+import com.nimagu.back.Entidades.Dcobxcli;
 import com.nimagu.back.Entidades.Detcobro;
 import com.nimagu.back.Repository.JdbcDegrosRepository;
 
@@ -143,7 +144,25 @@ public class CobranzaController {
       }
 
     }
+ @RequestMapping(value ="/detCobXCli" , params={"idcliente","feci","fecf"} )
+  public ResponseEntity<List<Dcobxcli>> getDetCobroXCli(@RequestParam("idcliente") Integer idcli,
+                                                        @RequestParam("feci") String fechi,
+                                                        @RequestParam("fecf") String fechf) {
+  try {
+   List<Dcobxcli> detcobro = null;
+         
+   detcobro = degrosRepository.DetCobroPorCliyF(idcli,fechi,fechf);
  
+   if (detcobro.isEmpty()) {
+     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+   } else {
+      return new ResponseEntity<>(detcobro, HttpStatus.OK);
+   }
+ } catch (Exception e) {
+    //return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+ }
+}                                                          
 
 
   // ITEMS DE DETALLE DE COBRANZA
@@ -202,5 +221,7 @@ public ResponseEntity<Detcobro> leerItemCobranza(@RequestParam("idcobro") Intege
     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 }
+
+
 
 }

@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.nimagu.back.Entidades.Categoria;
 import com.nimagu.back.Entidades.Ingreso;
 import com.nimagu.back.Entidades.MedioPago;
+import com.nimagu.back.Entidades.Procedencia;
 import com.nimagu.back.Repository.JdbcDegrosRepository;
 
 @CrossOrigin(origins = "${FRONTEND_URL}")
@@ -105,6 +106,26 @@ public class IngresosController {
       List<MedioPago> mpagos = degrosRepository.getMediosPago();      
       if ( mpagos != null){
         return new ResponseEntity<>(mpagos, HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
+    }
+
+      @RequestMapping(value ="/categorias"  )
+    public ResponseEntity<List<Categoria>> getCategorias() {
+      List<Categoria> categorias = degrosRepository.getCategorias();      
+      if ( categorias != null){
+        return new ResponseEntity<>(categorias, HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
+    }
+
+      @RequestMapping(value ="/procedencias"  )
+    public ResponseEntity<List<Procedencia>> getProcedencias() {
+      List<Procedencia> proce = degrosRepository.getProcedencias();      
+      if ( proce != null){
+        return new ResponseEntity<>(proce, HttpStatus.OK);
       } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
