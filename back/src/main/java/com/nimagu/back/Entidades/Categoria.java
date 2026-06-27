@@ -3,6 +3,9 @@ package com.nimagu.back.Entidades;
 public class Categoria {
     private int     idCategoria;
     private String  nombre;
+    private int     ingeg; // 0-todos 1-ingreso 2-egreso
+   
+
     public Categoria(){}
 
     public int getIdCategoria() {
@@ -21,7 +24,13 @@ public class Categoria {
         this.nombre = nombre;
     }
 
- 
+  public int getIngeg() {
+        return ingeg;
+    }
+
+    public void setIngeg(int ingeg) {
+        this.ingeg = ingeg;
+    }
 
     
 }

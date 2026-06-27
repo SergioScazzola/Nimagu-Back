@@ -3,7 +3,7 @@ package com.nimagu.back.Entidades;
 import java.util.Date;
 
 public class Ingreso {
-  private int        idIngreso;
+  private int        idingre;
   private Date       fecha;
   private int        idcliente;
   private String     ncliente;
@@ -20,13 +20,7 @@ public class Ingreso {
  
   public Ingreso(){}
 
-  public int getIdIngreso() {
-    return idIngreso;
-  }
-
-  public void setIdIngreso(int idIngreso) {
-    this.idIngreso = idIngreso;
-  }
+ 
 
   public Date getFecha() {
     return fecha;
@@ -130,6 +124,18 @@ public class Ingreso {
 
   public void setObserv(String observ) {
     this.observ = observ;
+  }
+
+
+
+  public int getIdingre() {
+    return idingre;
+  }
+
+
+
+  public void setIdingre(int idingre) {
+    this.idingre = idingre;
   }
 
    

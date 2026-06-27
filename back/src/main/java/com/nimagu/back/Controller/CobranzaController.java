@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Cobranza;
+import com.nimagu.back.Entidades.CobroComp;
+import com.nimagu.back.Entidades.CuentaB;
 import com.nimagu.back.Entidades.Dcobxcli;
 import com.nimagu.back.Entidades.Detcobro;
 import com.nimagu.back.Repository.JdbcDegrosRepository;
@@ -114,9 +116,10 @@ public class CobranzaController {
   }
     @PostMapping(value="/nuevo")
     // Graba un nuevo registro de Cobranza
-    public ResponseEntity<String> crearCobranza(@RequestBody Cobranza cobranza) {
+    public ResponseEntity<String> crearCobranza(@RequestBody CobroComp cobroc)                                           
+    {
        try {
-        int nrocob = degrosRepository.saveCobranza(cobranza);
+        int nrocob = degrosRepository.saveCobranza(cobroc);
         return new ResponseEntity<>(Integer.toString(nrocob), HttpStatus.CREATED);
        } catch (Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

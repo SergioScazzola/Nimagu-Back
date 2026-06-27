@@ -60,7 +60,7 @@ public class IngresosController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
-    @PostMapping(value="/ingreso/nuevo")
+  @PostMapping(value="/ingreso/nuevo")
     // Graba un nuevo ingreso
     public ResponseEntity<String> crearIngreso(@RequestBody Ingreso ingreso) {
        try {
@@ -111,9 +111,9 @@ public class IngresosController {
       }
     }
 
-      @RequestMapping(value ="/categorias"  )
-    public ResponseEntity<List<Categoria>> getCategorias() {
-      List<Categoria> categorias = degrosRepository.getCategorias();      
+      @RequestMapping(value ="/categorias" ,params={"ingeg"} )
+    public ResponseEntity<List<Categoria>> getCategorias(@RequestParam("ingeg") Integer ingreeg) {
+      List<Categoria> categorias = degrosRepository.getCategorias(ingreeg);      
       if ( categorias != null){
         return new ResponseEntity<>(categorias, HttpStatus.OK);
       } else {

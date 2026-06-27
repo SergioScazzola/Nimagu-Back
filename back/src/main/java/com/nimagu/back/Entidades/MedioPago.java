@@ -1,7 +1,7 @@
 package com.nimagu.back.Entidades;
 
 public class MedioPago {
-   private int    idMpago;
+   private int    idmpago;
    private String mediopago;
  
 
@@ -10,13 +10,13 @@ public class MedioPago {
    }
 
 
-   public int getIdMpago() {
-    return idMpago;
+   public int getIdmpago() {
+    return idmpago;
    }
 
 
-   public void setIdMpago(int idMpago) {
-    this.idMpago = idMpago;
+   public void setIdmpago(int idmepago) {
+    this.idmpago = idmepago;
    }
 
 
@@ -25,8 +25,8 @@ public class MedioPago {
    }
 
 
-   public void setMediopago(String mediopago) {
-    this.mediopago = mediopago;
+   public void setMediopago(String mpago) {
+    this.mediopago = mpago;
    }
  
 }

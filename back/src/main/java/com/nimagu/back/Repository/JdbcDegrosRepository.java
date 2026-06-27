@@ -7,10 +7,13 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nimagu.back.Entidades.Categoria;
 import com.nimagu.back.Entidades.Cliente;
 import com.nimagu.back.Entidades.Cobranza;
+import com.nimagu.back.Entidades.CobroComp;
+import com.nimagu.back.Entidades.CuentaB;
 import com.nimagu.back.Entidades.Dcobxcli;
 import com.nimagu.back.Entidades.Detcobro;
 import com.nimagu.back.Entidades.Detpago;
@@ -274,14 +277,46 @@ import com.nimagu.back.Entidades.Saldoprov;
    } 
 
   @Override
-  public int saveCobranza(Cobranza cobranza){
-  // Graba nueva cobranza 
-      return jdbcTemplate.update("INSERT INTO cobranza(idCobro,fecha,idCliente,nomcliente,nrofactura,importe,"+
+  @Transactional
+  public int saveCobranza(CobroComp cobroc){
+  // Graba nueva cobranza (Cabecera y detalle), Nuevos movimientos bancarios
+    // Cabecera de Cobranza -INSERT
+    int resu = 0;
+    resu =  jdbcTemplate.update("INSERT INTO cobranza(idCobro,fecha,idCliente,nomcliente,nrofactura,importe,"+
                                  "nroventa,observaciones) "+
                                  "VALUES(?,?,?,?,?,?,?,?)",
-          new Object[] { cobranza.getIdCobro(),cobranza.getFecha(),cobranza.getIdCliente(),
-                         cobranza.getNomcliente(),cobranza.getNrofactura(),
-                         cobranza.getImporte(),cobranza.getNroventa(),cobranza.getObservaciones() });    
+          new Object[] { cobroc.getCabcob().getIdCobro(),cobroc.getCabcob().getFecha(),
+                         cobroc.getCabcob().getIdCliente(),cobroc.getCabcob().getNomcliente(),
+                         cobroc.getCabcob().getNrofactura(),cobroc.getCabcob().getImporte(),
+                         cobroc.getCabcob().getNroventa(),cobroc.getCabcob().getObservaciones() });  
+    
+    // Detalle de Cobranza - INSERT
+     for (var i=0;i<cobroc.getDetcob().length;i++){
+       resu =  jdbcTemplate.update("INSERT INTO detcobro(idCobro,nroitem,idmpago,nmpago,fecha,nrompago,banco,"+
+                                  " fecvto,importe,ctadest,comentario) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+           new Object[] { cobroc.getDetcob()[i].getIdCobro(),cobroc.getDetcob()[i].getNroitem(),
+                          cobroc.getDetcob()[i].getIdmpago(),cobroc.getDetcob()[i].getNmpago(),
+                          cobroc.getDetcob()[i].getFecha(),cobroc.getDetcob()[i].getNrompago(),
+                          cobroc.getDetcob()[i].getBanco(),cobroc.getDetcob()[i].getFecvto(),
+                          cobroc.getDetcob()[i].getImporte(),cobroc.getDetcob()[i].getCtadest(),
+                          cobroc.getDetcob()[i].getComentario() });    
+       
+     };
+     // Movimientos de Cuenta Bancaria - INSERT
+     var nromov = cobroc.getDetcob().length + 1;    
+     for (var i=0;i<cobroc.getDetcob().length;i++){
+       resu = jdbcTemplate.update("INSERT INTO movcuenta(idCuenta,nromov,fechamov,ingegre,tipocomp,"+
+                                   "comprob,concepto,importe,coment) VALUES(?,?,?,?,?,?,?,?,?)",
+        new Object[] { cobroc.getDetcob()[i].getCtadest(),nromov,cobroc.getDetcob()[i].getFecha(),
+                      "IN",cobroc.getDetcob()[i].getNmpago(),cobroc.getDetcob()[i].getNrompago(),
+                      cobroc.getCabcob().getNomcliente(),cobroc.getDetcob()[i].getImporte(),
+                      cobroc.getDetcob()[i].getComentario() 
+                     });          
+        nromov++;     
+      } 
+    
+      return resu;
+    
   }
 
   @Override
@@ -544,7 +579,7 @@ import com.nimagu.back.Entidades.Saldoprov;
     
     @Override
     public int getMaxIngresos(){
-      String consulta = "SELECT MAX(idIngreso) FROM ingresos";
+      String consulta = "SELECT MAX(idingre) FROM ingresos";
    
       Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
       if (obj==null){
@@ -555,7 +590,7 @@ import com.nimagu.back.Entidades.Saldoprov;
     }
     @Override
     public Ingreso findIngresoById(int id) {
-      String q = "SELECT * FROM ingresos WHERE idIngreso=?";
+      String q = "SELECT * FROM ingresos WHERE idingre=?";
       try {
         Ingreso ingreso = jdbcTemplate.queryForObject(q,
             BeanPropertyRowMapper.newInstance(Ingreso.class), id);          
@@ -568,17 +603,17 @@ import com.nimagu.back.Entidades.Saldoprov;
     @Override
     public int saveIngreso(Ingreso ing){
     // Graba nuevo Cliente 
-        return jdbcTemplate.update("INSERT INTO ingresos(idIngreso,fecha,idcliente,ncliente,"+
+        return jdbcTemplate.update("INSERT INTO ingresos(idingre,fecha,idcliente,ncliente,"+
                                    "nroliq,idcat,categoria,cantidad,tkilos,precioun,importe,"+
                                    "proced,idcobro,observ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       
-            new Object[] {ing.getIdIngreso(),ing.getFecha(),ing.getIdcliente(),ing.getNcliente(),
+            new Object[] {ing.getIdingre(),ing.getFecha(),ing.getIdcliente(),ing.getNcliente(),
                           ing.getNroliq(),ing.getIdcat(),ing.getCategoria(),ing.getCantidad(),
                           ing.getTkilos(),ing.getPrecioun(),ing.getImporte(),ing.getProced(),
                           ing.getIdcobro(),ing.getObserv()
             });    
     }
-        
+
     @Override
     public int actualizarIngreso(int idingreso, Ingreso ing){    
     int resu = 0;
@@ -586,12 +621,12 @@ import com.nimagu.back.Entidades.Saldoprov;
         resu = jdbcTemplate.update("UPDATE ingresos SET fecha=?,idcliente=?,ncliente=?,"+
                                    "nroliq=?,idcat=?,categoria=?,cantidad=?,tkilos=?,precioun=?,"+
                                    "importe=?,proced=?,idcobro=?,observ=? "+
-                                   "WHERE idIngreso=?",
+                                   "WHERE idingre=?",
                                  
             new Object[] {ing.getFecha(),ing.getIdcliente(),ing.getNcliente(),
                           ing.getNroliq(),ing.getIdcat(),ing.getCategoria(),ing.getCantidad(),
                           ing.getTkilos(),ing.getPrecioun(),ing.getImporte(),ing.getProced(),
-                          ing.getIdcobro(),ing.getObserv(),ing.getIdIngreso() });
+                          ing.getIdcobro(),ing.getObserv(),ing.getIdingre() });
       } catch (IncorrectResultSizeDataAccessException e) {
         return -3;
     }
@@ -601,7 +636,7 @@ import com.nimagu.back.Entidades.Saldoprov;
     public int deleteIngreso(int idingreso){
       int resu = 0;
       try {
-        resu = jdbcTemplate.update("DELETE FROM ingresos WHERE idIngreso="+idingreso);
+        resu = jdbcTemplate.update("DELETE FROM ingresos WHERE idingre="+idingreso);
       } catch (DataAccessException dae){
         resu = -5;   
       }
@@ -641,14 +676,21 @@ import com.nimagu.back.Entidades.Saldoprov;
     }
     @Override
     public List<MedioPago> getMediosPago(){
-      String selec = "SELECT * FROM mediospago ORDER BY idmpago ASC";
+      String selec = "SELECT * FROM mediospago ORDER BY mediopago ASC";
       return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(MedioPago.class));
     }
 
     @Override
-    public List<Categoria> getCategorias(){
-      String selec = "SELECT * FROM categorias ORDER BY idCategoria ASC";
-      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Categoria.class));
+    public List<Categoria> getCategorias(int ingegre){
+      String selec = "";
+      if (ingegre==0){
+        selec = "SELECT * FROM categorias ORDER BY nombre ASC";
+         return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Categoria.class));
+      } else {
+        selec = "SELECT * FROM categorias WHERE ingeg=? ORDER BY nombre ASC";
+        return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Categoria.class),ingegre);
+      }      
+      
     }
 
      @Override
