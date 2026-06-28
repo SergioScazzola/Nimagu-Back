@@ -150,6 +150,7 @@ public class CuentasController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
       }
 }
+
 @PutMapping(value="/cuentab/actmov")
 public ResponseEntity<String> updateMovCuenta(@RequestBody MovCta movcuenta){
 try {
@@ -160,6 +161,7 @@ try {
      
 } 
 }
+
 
 @DeleteMapping(value="/cuentab/delmov", params={"idcuenta","idmov"})    
 public ResponseEntity<String> borrarMovCuenta(@RequestParam("idcuenta") Integer idcta,

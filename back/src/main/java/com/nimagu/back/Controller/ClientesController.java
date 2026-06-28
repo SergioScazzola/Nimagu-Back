@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Cliente;
-
+import com.nimagu.back.Entidades.Saldocli;
 import com.nimagu.back.Repository.JdbcDegrosRepository;
 
 @CrossOrigin(origins = "${FRONTEND_URL}")
@@ -80,7 +80,44 @@ public class ClientesController {
       } 
     }
 
-   
+    @RequestMapping(value ="/cliente/saldo" , params={"idcliente","nrosaldo"} )
+  public ResponseEntity<Saldocli> getSaldodeCliente(@RequestParam("idcliente") Integer idcli,
+                                                   @RequestParam("nrosaldo") Integer  nros) {
+    Saldocli scli = degrosRepository.getSaldoDelCliente(idcli,nros);
+    if (scli != null){
+      return new ResponseEntity<>(scli, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+   @RequestMapping(value = "/saldosxcli", params={"nrocli"})
+    public ResponseEntity<List<Saldocli>> getSaldosPorCliente(@RequestParam("nrocli") int ncli) {
+    try {
+      List<Saldocli> saldos = null;
+            
+      saldos = degrosRepository.getSaldosPorCliente(ncli);
+    
+      if (saldos.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(saldos, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @PostMapping(value="/saldo/nuevo")
+    // Graba un nuevo Saldo del cliente
+    public ResponseEntity<String> crearSaldoCliente(@RequestBody Saldocli saldoc) {
+       try {
+        int nros = degrosRepository.saveSaldoCliente(saldoc);
+        return new ResponseEntity<>(Integer.toString(nros), HttpStatus.CREATED);
+       } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+
 
   
      @DeleteMapping(value="/cliente", params={"id"})    

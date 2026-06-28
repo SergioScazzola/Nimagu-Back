@@ -4,82 +4,174 @@ import java.util.Date;
 
 public class Dcobxcli {
      private   int    idCobro;
-     private   Date   fechaCobro;
+     private   Date   fechac;
      private   int    idCliente;
      private   String nomcliente;
      private   String nrofactura;
-     private   double importeCobro;
+     private   double importec;
      private   int    nroitem;
      private   String nmpago;
-     private   Date   fechaDetalle;
+     private   Date   fechad;
      private   String nrompago;
      private   String banco;
      private   Date   fecvto;
-     private   double importeDetalle;
+     private   double imported;
      private   int    ctadest;
      private   String comentario;
 
+
      public Dcobxcli(){}
+
 
      public int getIdCobro() {
          return idCobro;
      }
 
-     public Date getFechaCobro() {
-         return fechaCobro;
+
+     public void setIdCobro(int idCobro) {
+         this.idCobro = idCobro;
      }
+
+
+     public Date getFechac() {
+         return fechac;
+     }
+
+
+     public void setFechac(Date fechac) {
+         this.fechac = fechac;
+     }
+
 
      public int getIdCliente() {
          return idCliente;
      }
 
+
+     public void setIdCliente(int idCliente) {
+         this.idCliente = idCliente;
+     }
+
+
      public String getNomcliente() {
          return nomcliente;
      }
+
+
+     public void setNomcliente(String nomcliente) {
+         this.nomcliente = nomcliente;
+     }
+
 
      public String getNrofactura() {
          return nrofactura;
      }
 
-     public double getImporteCobro() {
-         return importeCobro;
+
+     public void setNrofactura(String nrofactura) {
+         this.nrofactura = nrofactura;
      }
+
+
+     public double getImportec() {
+         return importec;
+     }
+
+
+     public void setImportec(double importec) {
+         this.importec = importec;
+     }
+
 
      public int getNroitem() {
          return nroitem;
      }
 
+
+     public void setNroitem(int nroitem) {
+         this.nroitem = nroitem;
+     }
+
+
      public String getNmpago() {
          return nmpago;
      }
 
-     public Date getFechaDetalle() {
-         return fechaDetalle;
+
+     public void setNmpago(String nmpago) {
+         this.nmpago = nmpago;
      }
+
+
+     public Date getFechad() {
+         return fechad;
+     }
+
+
+     public void setFechad(Date fechad) {
+         this.fechad = fechad;
+     }
+
 
      public String getNrompago() {
          return nrompago;
      }
 
+
+     public void setNrompago(String nrompago) {
+         this.nrompago = nrompago;
+     }
+
+
      public String getBanco() {
          return banco;
      }
+
+
+     public void setBanco(String banco) {
+         this.banco = banco;
+     }
+
 
      public Date getFecvto() {
          return fecvto;
      }
 
-     public double getImporteDetalle() {
-         return importeDetalle;
+
+     public void setFecvto(Date fecvto) {
+         this.fecvto = fecvto;
      }
+
+
+     public double getImported() {
+         return imported;
+     }
+
+
+     public void setImported(double imported) {
+         this.imported = imported;
+     }
+
 
      public int getCtadest() {
          return ctadest;
      }
 
+
+     public void setCtadest(int ctadest) {
+         this.ctadest = ctadest;
+     }
+
+
      public String getComentario() {
          return comentario;
      }
+
+
+     public void setComentario(String comentario) {
+         this.comentario = comentario;
+     }
+
 
      
 }

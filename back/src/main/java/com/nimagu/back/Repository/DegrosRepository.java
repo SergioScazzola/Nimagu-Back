@@ -59,6 +59,7 @@ import com.nimagu.back.Entidades.Saldocli;
         int getCantDetCobrosPorId(int idcob);
         int saveItemDetCobro(Detcobro detcobro);
         int actualizarItemDetCobro(Detcobro detcobro);    
+        int actualizarCtaDestino(int idcob,int iditem,int ctadestino); 
         Detcobro findItemDetCobro(int idcob, int iditem);
        
         //List<Saldoprov> getSaldosPorProv(int nprov);

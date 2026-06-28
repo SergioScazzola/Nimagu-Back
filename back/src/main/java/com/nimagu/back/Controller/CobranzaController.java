@@ -147,13 +147,15 @@ public class CobranzaController {
       }
 
     }
+
  @RequestMapping(value ="/detCobXCli" , params={"idcliente","feci","fecf"} )
   public ResponseEntity<List<Dcobxcli>> getDetCobroXCli(@RequestParam("idcliente") Integer idcli,
                                                         @RequestParam("feci") String fechi,
                                                         @RequestParam("fecf") String fechf) {
+   
+   List<Dcobxcli> detcobro = null;                                                      
   try {
-   List<Dcobxcli> detcobro = null;
-         
+           
    detcobro = degrosRepository.DetCobroPorCliyF(idcli,fechi,fechf);
  
    if (detcobro.isEmpty()) {
@@ -163,7 +165,7 @@ public class CobranzaController {
    }
  } catch (Exception e) {
     //return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(detcobro,HttpStatus.INTERNAL_SERVER_ERROR);
  }
 }                                                          
 
@@ -208,6 +210,18 @@ public int getCantDetCobro(@RequestParam("idcobro") Integer idcob){
   public ResponseEntity<String> updateItemCobranza(@RequestBody Detcobro detcobro){
       try {
         int resu = degrosRepository.actualizarItemDetCobro(detcobro);    
+        return new ResponseEntity<>(Integer.toString(resu), HttpStatus.OK);
+      } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+     
+      } 
+}   
+@PutMapping(value="/detalle/actctad", params={"idcobro","nroitem","ctad"} )
+  public ResponseEntity<String> updateCtaDestino(@RequestParam("idcobro") Integer idcob,
+                                                 @RequestParam("nroitem") Integer iditem,
+                                                @RequestParam("ctad")   Integer ctadestino){
+      try {
+        int resu = degrosRepository.actualizarCtaDestino(idcob,iditem,ctadestino);    
         return new ResponseEntity<>(Integer.toString(resu), HttpStatus.OK);
       } catch (Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

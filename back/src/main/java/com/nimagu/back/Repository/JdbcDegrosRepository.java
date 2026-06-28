@@ -116,7 +116,8 @@ import com.nimagu.back.Entidades.Saldoprov;
     // Graba un nuevo saldo para el Cliente
         return jdbcTemplate.update("INSERT INTO saldoscli(idCliente,nrosaldo,fecha,saldo) "+
                                    "VALUES(?,?,?,?)",
-            new Object[] { saldoc.getIdCliente(),saldoc.getNrosaldo(),saldoc.getFecha(),saldoc.getSaldo()});    
+            new Object[] { saldoc.getIdCliente(),saldoc.getNrosaldo(),
+                           saldoc.getFecha(),saldoc.getSaldo()});    
     }
 
  @Override
@@ -279,7 +280,7 @@ import com.nimagu.back.Entidades.Saldoprov;
   @Override
   @Transactional
   public int saveCobranza(CobroComp cobroc){
-  // Graba nueva cobranza (Cabecera y detalle), Nuevos movimientos bancarios
+     // Graba nueva cobranza (Cabecera y detalle)
     // Cabecera de Cobranza -INSERT
     int resu = 0;
     resu =  jdbcTemplate.update("INSERT INTO cobranza(idCobro,fecha,idCliente,nomcliente,nrofactura,importe,"+
@@ -302,20 +303,14 @@ import com.nimagu.back.Entidades.Saldoprov;
                           cobroc.getDetcob()[i].getComentario() });    
        
      };
-     // Movimientos de Cuenta Bancaria - INSERT
-     var nromov = cobroc.getDetcob().length + 1;    
-     for (var i=0;i<cobroc.getDetcob().length;i++){
-       resu = jdbcTemplate.update("INSERT INTO movcuenta(idCuenta,nromov,fechamov,ingegre,tipocomp,"+
-                                   "comprob,concepto,importe,coment) VALUES(?,?,?,?,?,?,?,?,?)",
-        new Object[] { cobroc.getDetcob()[i].getCtadest(),nromov,cobroc.getDetcob()[i].getFecha(),
-                      "IN",cobroc.getDetcob()[i].getNmpago(),cobroc.getDetcob()[i].getNrompago(),
-                      cobroc.getCabcob().getNomcliente(),cobroc.getDetcob()[i].getImporte(),
-                      cobroc.getDetcob()[i].getComentario() 
-                     });          
-        nromov++;     
-      } 
+     // Actualiza el "idcobro" en la tabla de ingresos
+     resu = jdbcTemplate.update("UPDATE ingresos SET idcobro=? "+
+                                   "WHERE idingre=?",
+                                 
+            new Object[] {cobroc.getCabcob().getIdCobro(),cobroc.getCabcob().getNroventa()});
+
     
-      return resu;
+   return resu;
     
   }
 
@@ -404,7 +399,17 @@ import com.nimagu.back.Entidades.Saldoprov;
    }
    return resu; 
    }
-
+   @Override
+    public int actualizarCtaDestino(int idcob,int iditem,int ctadestino){
+      int resu = 0;
+      try {                   
+         resu = jdbcTemplate.update("UPDATE detcobro SET ctadest=? WHERE idCobro=? AND nroitem=?",
+            new Object[] { ctadestino,idcob,iditem});    
+      } catch (IncorrectResultSizeDataAccessException e) {
+        return -3;
+   }
+   return resu; 
+    }
    @Override
    public Detcobro findItemDetCobro(int nrocobro,int nroit){
      String q = "SELECT * FROM  detcobro WHERE idCobro=? AND nroitem=?";
@@ -648,28 +653,29 @@ import com.nimagu.back.Entidades.Saldoprov;
       return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Ingreso.class),nrocli);
 
      }
+    
      @Override
     public  List<Dcobxcli> DetCobroPorCliyF(int idcli,String fechi, String fechf){
       String selec = "SELECT " + 
                 "c.idCobro," + 
-                "c.fecha AS fechaCobro,"+
+                "c.fecha AS fechac,"+
                 "c.idCliente,"+ 
                 "c.nomcliente,"+
                 "c.nrofactura,"+
-                "c.importe AS importeCobro,"+              
+                "c.importe AS importec,"+              
                 "d.nroitem," +                 
                 "d.nmpago,"+
-                "d.fecha AS fechaDetalle,"+
+                "d.fecha AS fechad,"+
                 "d.nrompago,"+
                 "d.banco,"+
                 "d.fecvto,"+
-                "d.importe AS importeDetalle,"+
+                "d.importe AS imported,"+
                 "d.ctadest,"+
                 "d.comentario "+
                 "FROM cobranza c "+
                 "INNER JOIN detcobro d "+
                 "ON c.idCobro = d.idCobro "+ 
-                "WHERE c.idCliente = :idCliente " +
+                "WHERE c.idCliente = ? " +
                 "AND c.fecha BETWEEN ? AND ? " +                
                 "ORDER BY c.fecha, c.idCobro, d.nroitem";
       return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Dcobxcli.class),idcli,fechi,fechf);          
