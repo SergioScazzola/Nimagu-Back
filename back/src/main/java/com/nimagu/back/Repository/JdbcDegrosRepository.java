@@ -357,8 +357,13 @@ import com.nimagu.back.Entidades.Saldoprov;
 
   }*/
   @Override
-  public List<Detcobro> AllDetCobroPorId(int nrocobro) {   
-    String selec = "SELECT * FROM detcobro WHERE idCobro=? ORDER BY nroitem";
+  public List<Detcobro> AllDetCobroPorId(int nrocobro, int ctadestino) {   
+    String selec = "";
+    if (ctadestino==0){// devolver lo NO transferido
+       selec = "SELECT * FROM detcobro WHERE idCobro=? AND ctadest=0 ORDER BY nroitem";
+    } else { // devolver todo
+      selec = "SELECT * FROM detcobro WHERE idCobro=? ORDER BY nroitem";
+    }    
     return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Detcobro.class),nrocobro);
   }
 

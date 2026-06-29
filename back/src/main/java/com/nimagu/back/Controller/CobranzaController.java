@@ -63,42 +63,6 @@ public class CobranzaController {
    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
  }
 }
-/*// Devuelve informe de Cobranza detallado de todos los clientes entre "feci" y "fecf"
-@GetMapping(value="/infoDetCob",params={"feci","fecf"})
-  public ResponseEntity<List<InfoDetCobro>> getInfoDetCobranza(@RequestParam("feci") String fecini,
-                                                               @RequestParam("fecf") String fecfin) {
- try {
-   List<InfoDetCobro> infocob = null;
-         
-   infocob = degrosRepository.infoDetCobranza(fecini,fecfin);
- 
-   if (infocob.isEmpty()) {
-     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-   } else {
-      return new ResponseEntity<>(infocob, HttpStatus.OK);
-   }
- } catch (Exception e) {
-   return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
- }
-}
-// Devuelve informe de Cobranza resumido de todos los clientes entre "feci" y "fecf"
-@GetMapping(value="/infoCob",params={"feci","fecf"})
-  public ResponseEntity<List<Cobranza>> getInfoResCobranza(@RequestParam("feci") String fecini,
-                                                           @RequestParam("fecf") String fecfin) {
- try {
-   List<Cobranza> infocob = null;
-         
-   infocob = degrosRepository.infoResCobranza(fecini,fecfin);
- 
-   if (infocob.isEmpty()) {
-     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-   } else {
-      return new ResponseEntity<>(infocob, HttpStatus.OK);
-   }
- } catch (Exception e) {
-   return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
- }
-}*/
 
   @RequestMapping(value="/max")
   public int getCantidadCobranza(){
@@ -172,12 +136,15 @@ public class CobranzaController {
 
   // ITEMS DE DETALLE DE COBRANZA
 
-    @GetMapping(value="/detalle", params={"idcobro"})
-  public ResponseEntity<List<Detcobro>> getAllDetCobro(@RequestParam("idcobro") Integer idcob) {
+    @GetMapping(value="/detalle", params={"idcobro","ctadestino"})
+    // si ctadestino = 1 : devuelve todos los items, si es = 0 devuelve lo NO transferido : 
+    // ctadestino = 0 
+  public ResponseEntity<List<Detcobro>> getAllDetCobro(@RequestParam("idcobro") Integer idcob,
+                                                      @RequestParam("ctadestino") Integer ctad) {
  try {
    List<Detcobro> detcobro = null;
          
-   detcobro = degrosRepository.AllDetCobroPorId(idcob);
+   detcobro = degrosRepository.AllDetCobroPorId(idcob,ctad);
  
    if (detcobro.isEmpty()) {
      return new ResponseEntity<>(HttpStatus.NO_CONTENT);

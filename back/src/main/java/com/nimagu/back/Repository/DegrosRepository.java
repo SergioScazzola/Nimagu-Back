@@ -55,7 +55,7 @@ import com.nimagu.back.Entidades.Saldocli;
         int actualizarCobranza(Cobranza cobranza);    
         int deleteCobranza(int idcobro);
         List<Dcobxcli> DetCobroPorCliyF(int idcli,String fechi, String fechf);
-        List<Detcobro> AllDetCobroPorId(int idcob);
+        List<Detcobro> AllDetCobroPorId(int idcob,int ctadest);
         int getCantDetCobrosPorId(int idcob);
         int saveItemDetCobro(Detcobro detcobro);
         int actualizarItemDetCobro(Detcobro detcobro);    
