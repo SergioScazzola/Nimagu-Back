@@ -16,64 +16,64 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.nimagu.back.Entidades.Egreso;
-import com.nimagu.back.Entidades.Ingreso;
+import com.nimagu.back.Entidades.Salida;
+
 import com.nimagu.back.Repository.JdbcDegrosRepository;
 
 @CrossOrigin(origins = "${FRONTEND_URL}")
 @RestController
-@RequestMapping("/api/egreso")
-public class EgresosController {
+@RequestMapping("/api/salida")
+public class SalidasController {
 
 
      @Autowired
     JdbcDegrosRepository degrosRepository;
     @SuppressWarnings("null")
     @GetMapping("/egresos")
-    public ResponseEntity<List<Egreso>> getAllEgresos() {
-      List<Egreso> egresos = null;
+    public ResponseEntity<List<Salida>> getAllSalidas() {
+      List<Salida> salidas = null;
     try {      
             
-      egresos = degrosRepository.AllEgresos();
+      salidas = degrosRepository.AllSalidas();
     
-      if (egresos.isEmpty()) {
+      if (salidas.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       } else {
-         return new ResponseEntity<>(egresos, HttpStatus.OK);
+         return new ResponseEntity<>(salidas, HttpStatus.OK);
       }
     } catch (Exception e) {
-       return new ResponseEntity<>(egresos, HttpStatus.INTERNAL_SERVER_ERROR);
+       return new ResponseEntity<>(salidas, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
   @RequestMapping(value="/max")
-  public int getCantidadEgresos(){
-     int cantl = degrosRepository.getMaxEgresos();
+  public int getCantidadSalidas(){
+     int cantl = degrosRepository.getMaxSalidas();
      return cantl;
   }
-  @RequestMapping(value ="/egreso" , params={"id"} )
-  public ResponseEntity<Egreso> getIngresoById(@RequestParam("id") Integer idegreso) {
-    Egreso egreso = degrosRepository.findEgresoById(idegreso);
-    if (egreso != null){
-      return new ResponseEntity<>(egreso, HttpStatus.OK);
+  @RequestMapping(value ="/salida" , params={"id"} )
+  public ResponseEntity<Salida> getSalidaById(@RequestParam("id") Integer idsalida) {
+    Salida salida = degrosRepository.findSalidaById(idsalida);
+    if (salida != null){
+      return new ResponseEntity<>(salida, HttpStatus.OK);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
-    @PostMapping(value="/egreso/nuevo")
+    @PostMapping(value="/salida/nuevo")
     // Graba un nuevo egreso
-    public ResponseEntity<String> crearEgreso(@RequestBody Egreso egreso) {
+    public ResponseEntity<String> crearEgreso(@RequestBody Salida salida) {
        try {
-        int nroeg = degrosRepository.saveEgreso(egreso);
-        return new ResponseEntity<>(Integer.toString(nroeg), HttpStatus.CREATED);
+        int nrosal = degrosRepository.saveSalida(salida);
+        return new ResponseEntity<>(Integer.toString(nrosal), HttpStatus.CREATED);
        } catch (Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
-    @PutMapping(value="/egreso/actualizar", params={"id"})
-    public ResponseEntity<String> updateEgreso(@RequestParam("id") Integer idegreso,
-                                                @RequestBody Egreso egreso){
+    @PutMapping(value="/salida/actualizar", params={"id"})
+    public ResponseEntity<String> updateEgreso(@RequestParam("id") Integer idsalida,
+                                                @RequestBody Salida salida){
       try {
-        int resultado = degrosRepository.actualizarEgreso(idegreso,egreso);    
+        int resultado = degrosRepository.actualizarEgreso(idsalida,salida);    
         return new ResponseEntity<>(Integer.toString(resultado), HttpStatus.OK);
       } catch (Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -81,20 +81,20 @@ public class EgresosController {
       } 
     }
      
-     @DeleteMapping(value="/egreso", params={"id"})    
-    public ResponseEntity<String> borrarEgreso(@RequestParam("id") Integer idegreso){
+     @DeleteMapping(value="/salida", params={"id"})    
+    public ResponseEntity<String> borrarEgreso(@RequestParam("id") Integer idsalida){
       try {
-        int nroeg = degrosRepository.deleteIngreso(idegreso);
-        return new ResponseEntity<>(Integer.toString(nroeg),HttpStatus.OK);
+        int nrosal = degrosRepository.deleteSalida(idsalida);
+        return new ResponseEntity<>(Integer.toString(nrosal),HttpStatus.OK);
       } catch (Exception e) {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR );
       }
     }
-  @RequestMapping(value ="/egresosxprov" , params={"idprov"} )
-    public ResponseEntity<List<Egreso>> getEgresosxProv(@RequestParam("idprov") int nroprov) {
-      List<Egreso> egresos = degrosRepository.getEgresosXProv(nroprov);      
-      if ( egresos != null){
-        return new ResponseEntity<>(egresos, HttpStatus.OK);
+  @RequestMapping(value ="/salidasxprov" , params={"idprov"} )
+    public ResponseEntity<List<Salida>> getEgresosxProv(@RequestParam("idprov") int nroprov) {
+      List<Salida> salidas = degrosRepository.getSalidasXProv(nroprov);      
+      if ( salidas != null){
+        return new ResponseEntity<>(salidas, HttpStatus.OK);
       } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }

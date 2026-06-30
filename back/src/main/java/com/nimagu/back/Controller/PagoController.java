@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Pago;
+import com.nimagu.back.Entidades.Dcobxcli;
 import com.nimagu.back.Entidades.Detpago;
+import com.nimagu.back.Entidades.Dpagxprov;
 import com.nimagu.back.Repository.JdbcDegrosRepository;
 
 @CrossOrigin(origins = "${FRONTEND_URL}")
@@ -60,42 +62,7 @@ public class PagoController {
    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
  }
 }
-/*// Devuelve informe de Cobranza detallado de todos los clientes entre "feci" y "fecf"
-@GetMapping(value="/infoDetCob",params={"feci","fecf"})
-  public ResponseEntity<List<InfoDetCobro>> getInfoDetCobranza(@RequestParam("feci") String fecini,
-                                                               @RequestParam("fecf") String fecfin) {
- try {
-   List<InfoDetCobro> infocob = null;
-         
-   infocob = degrosRepository.infoDetCobranza(fecini,fecfin);
- 
-   if (infocob.isEmpty()) {
-     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-   } else {
-      return new ResponseEntity<>(infocob, HttpStatus.OK);
-   }
- } catch (Exception e) {
-   return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
- }
-}
-// Devuelve informe de Cobranza resumido de todos los clientes entre "feci" y "fecf"
-@GetMapping(value="/infoCob",params={"feci","fecf"})
-  public ResponseEntity<List<Cobranza>> getInfoResCobranza(@RequestParam("feci") String fecini,
-                                                           @RequestParam("fecf") String fecfin) {
- try {
-   List<Cobranza> infocob = null;
-         
-   infocob = degrosRepository.infoResCobranza(fecini,fecfin);
- 
-   if (infocob.isEmpty()) {
-     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-   } else {
-      return new ResponseEntity<>(infocob, HttpStatus.OK);
-   }
- } catch (Exception e) {
-   return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
- }
-}*/
+
 
   @RequestMapping(value="/max")
   public int getCantidadPagos(){
@@ -144,9 +111,28 @@ public class PagoController {
 
     }
  
+@RequestMapping(value ="/detPagXProv" , params={"idprov","feci","fecf"} )
+  public ResponseEntity<List<Dpagxprov>> getDetPagoXCli(@RequestParam("idprov") Integer idpro,
+                                                        @RequestParam("feci") String fechi,
+                                                        @RequestParam("fecf") String fechf) {
+   
+   List<Dpagxprov> detpago = null;                                                      
+  try {
+           
+   detpago = degrosRepository.DetPagoPorProvyF(idpro,fechi,fechf);
+ 
+   if (detpago.isEmpty()) {
+     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+   } else {
+      return new ResponseEntity<>(detpago, HttpStatus.OK);
+   }
+ } catch (Exception e) {
+    //return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(detpago,HttpStatus.INTERNAL_SERVER_ERROR);
+ }
+}     
 
-
-  // ITEMS DE DETALLE DE COBRANZA
+  // ITEMS DE DETALLE DE PAGOS
 
   @GetMapping(value="/detalle", params={"idpago"})
   public ResponseEntity<List<Detpago>> getAllDetPago(@RequestParam("idpago") Integer idpag) {
@@ -192,6 +178,21 @@ public int getCantDetPago(@RequestParam("idpago") Integer idpag){
      
       } 
 }   
+
+@PutMapping(value="/detalle/actctad", params={"idpago","nroitem","ctad"} )
+// Actualiza el item de cobranza con el nro.de cuenta "ctad" al cual fue transferido
+  public ResponseEntity<String> updateCtaDestinoPag(@RequestParam("idpago") Integer idpag,
+                                                 @RequestParam("nroitem") Integer iditem,
+                                                @RequestParam("ctad")   Integer ctadestino){
+      try {
+        int resu = degrosRepository.actualizarCtaDestinoPag(idpag,iditem,ctadestino);    
+        return new ResponseEntity<>(Integer.toString(resu), HttpStatus.OK);
+      } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+     
+      } 
+}   
+
 @RequestMapping(value ="/detalle" , params={"idpago","nroitem"} )
 public ResponseEntity<Detpago> leerItemPago(@RequestParam("idpago") Integer idpag,
                                             @RequestParam("nroitem") Integer iditem ) {

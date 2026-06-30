@@ -11,13 +11,14 @@ import com.nimagu.back.Entidades.CuentaB;
 import com.nimagu.back.Entidades.Dcobxcli;
 import com.nimagu.back.Entidades.Detcobro;
 import com.nimagu.back.Entidades.Detpago;
+import com.nimagu.back.Entidades.Dpagxprov;
 import com.nimagu.back.Entidades.Egreso;
 import com.nimagu.back.Entidades.Ingreso;
 import com.nimagu.back.Entidades.MedioPago;
 import com.nimagu.back.Entidades.Pago;
 import com.nimagu.back.Entidades.Procedencia;
 import com.nimagu.back.Entidades.Saldoprov;
-
+import com.nimagu.back.Entidades.Salida;
 import com.nimagu.back.Entidades.Proveedor;
 import com.nimagu.back.Entidades.Saldocli;
 
@@ -74,9 +75,11 @@ import com.nimagu.back.Entidades.Saldocli;
         int savePago(Pago pago);
         int actualizarPago(Pago pago);
         int deletePago(int idpag);
+        List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf);
         List<Detpago> AllDetPagoPorId(int idpag);
         int getCantDetPagosPorId(int idpag);
         int saveItemDetPago(Detpago detpago);
+        int actualizarCtaDestinoPag(int idpag,int iditem,int ctadestino); 
         int actualizarItemDetPago(Detpago detpago);
         Detpago findItemDetPago(int idpag, int iditem);
 
@@ -91,13 +94,13 @@ import com.nimagu.back.Entidades.Saldocli;
         List<Categoria> getCategorias(int ingreeg);  
         List<Procedencia> getProcedencias();        
 
-        List<Egreso> AllEgresos();
-        int getMaxEgresos();  
-        Egreso findEgresoById(int nroing);
-        int saveEgreso(Egreso egreso);        
-        int actualizarEgreso(int idingreso,Egreso egreso);    
-        int deleteEgreso(int idingreso);
-        List<Egreso> getEgresosXProv(int nroprov);
+        List<Salida> AllSalidas();
+        int getMaxSalidas();  
+        Salida findSalidaById(int nroing);
+        int saveSalida(Salida salida);        
+        int actualizarSalida(int idsalida,Salida salida);    
+        int deleteSalida(int idsalida);
+        List<Salida> getSalidasXProv(int nroprov);
 
 
     }

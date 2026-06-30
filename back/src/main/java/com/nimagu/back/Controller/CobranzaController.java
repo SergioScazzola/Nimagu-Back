@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Cobranza;
 import com.nimagu.back.Entidades.CobroComp;
-import com.nimagu.back.Entidades.CuentaB;
+
 import com.nimagu.back.Entidades.Dcobxcli;
 import com.nimagu.back.Entidades.Detcobro;
 import com.nimagu.back.Repository.JdbcDegrosRepository;
@@ -184,6 +184,7 @@ public int getCantDetCobro(@RequestParam("idcobro") Integer idcob){
       } 
 }   
 @PutMapping(value="/detalle/actctad", params={"idcobro","nroitem","ctad"} )
+// Actualiza el item de cobranza con el nro.de cuenta "ctad" al cual fue transferido
   public ResponseEntity<String> updateCtaDestino(@RequestParam("idcobro") Integer idcob,
                                                  @RequestParam("nroitem") Integer iditem,
                                                 @RequestParam("ctad")   Integer ctadestino){

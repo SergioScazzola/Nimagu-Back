@@ -1,4 +1,4 @@
-package com.Sisbul.ApiRrest.entidades;
+package com.nimagu.back.Entidades;
 
 public class Proveedor {  
         private int     idProv;
@@ -9,10 +9,7 @@ public class Proveedor {
         private String  email;
         private String  notas;
         private double  saldoini;
-
-      
-
-    
+        
         public Proveedor(){                   
         }
     

@@ -64,6 +64,7 @@ public class ProveedorController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+    
     @PutMapping(value="/prov/actualizar")
     public ResponseEntity<String> updateProv(@RequestBody Proveedor prove){
       try {
