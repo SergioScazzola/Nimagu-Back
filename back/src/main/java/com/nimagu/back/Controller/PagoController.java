@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Pago;
+import com.nimagu.back.Entidades.PagoComp;
 import com.nimagu.back.Entidades.Dcobxcli;
 import com.nimagu.back.Entidades.Detpago;
 import com.nimagu.back.Entidades.Dpagxprov;
@@ -80,7 +81,7 @@ public class PagoController {
   }
     @PostMapping(value="/nuevo")
     // Graba un nuevo registro de Pago
-    public ResponseEntity<String> crearPago(@RequestBody Pago pago) {
+    public ResponseEntity<String> crearPago(@RequestBody PagoComp pago) {
        try {
         int nropag = degrosRepository.savePago(pago);
         return new ResponseEntity<>(Integer.toString(nropag), HttpStatus.CREATED);

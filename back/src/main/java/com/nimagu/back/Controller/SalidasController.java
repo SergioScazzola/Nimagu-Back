@@ -73,7 +73,7 @@ public class SalidasController {
     public ResponseEntity<String> updateEgreso(@RequestParam("id") Integer idsalida,
                                                 @RequestBody Salida salida){
       try {
-        int resultado = degrosRepository.actualizarEgreso(idsalida,salida);    
+        int resultado = degrosRepository.actualizarSalida(idsalida,salida);    
         return new ResponseEntity<>(Integer.toString(resultado), HttpStatus.OK);
       } catch (Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -90,9 +90,12 @@ public class SalidasController {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR );
       }
     }
-  @RequestMapping(value ="/salidasxprov" , params={"idprov"} )
-    public ResponseEntity<List<Salida>> getEgresosxProv(@RequestParam("idprov") int nroprov) {
-      List<Salida> salidas = degrosRepository.getSalidasXProv(nroprov);      
+  @RequestMapping(value ="/salidasxprov" , params={"idprov", "pagadas"} )
+  // 0-No pagadas, 1-Pagadas 2-Todas
+    public ResponseEntity<List<Salida>> getEgresosxProv(@RequestParam("idprov") Integer nroprov,
+                                                        @RequestParam("pagadas") Integer pagadas
+  ) {
+      List<Salida> salidas = degrosRepository.getSalidasXProv(nroprov, pagadas);      
       if ( salidas != null){
         return new ResponseEntity<>(salidas, HttpStatus.OK);
       } else {

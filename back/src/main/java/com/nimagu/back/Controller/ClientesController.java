@@ -118,6 +118,16 @@ public class ClientesController {
       }
     }
 
+  @PutMapping(value="/actsaldoini")
+    public ResponseEntity<String> updateSaldoInicial(@RequestBody Saldocli saldocli){
+      try {
+        int resultado = degrosRepository.actSaldoInicial(saldocli);    
+        return new ResponseEntity<>(Integer.toString(resultado), HttpStatus.OK);
+      } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+     
+      } 
+    }
 
   
      @DeleteMapping(value="/cliente", params={"id"})    

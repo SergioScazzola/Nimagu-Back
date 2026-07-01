@@ -16,6 +16,7 @@ import com.nimagu.back.Entidades.Egreso;
 import com.nimagu.back.Entidades.Ingreso;
 import com.nimagu.back.Entidades.MedioPago;
 import com.nimagu.back.Entidades.Pago;
+import com.nimagu.back.Entidades.PagoComp;
 import com.nimagu.back.Entidades.Procedencia;
 import com.nimagu.back.Entidades.Saldoprov;
 import com.nimagu.back.Entidades.Salida;
@@ -72,7 +73,7 @@ import com.nimagu.back.Entidades.Saldocli;
         List<Pago> AllPagosPorProveedor(int idpro);
         int getMaxPagos();        
         Pago findPagoById(int idpag);
-        int savePago(Pago pago);
+        int savePago(PagoComp pago);
         int actualizarPago(Pago pago);
         int deletePago(int idpag);
         List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf);
@@ -89,7 +90,7 @@ import com.nimagu.back.Entidades.Saldocli;
         int saveIngreso(Ingreso ingreso);        
         int actualizarIngreso(int idingreso,Ingreso ingreso);    
         int deleteIngreso(int idingreso);
-        List<Ingreso> getIngresosXCliente(int nrocli);  
+        List<Ingreso> getIngresosXCliente(int nrocli,int cobrados);  
         List<MedioPago> getMediosPago();                
         List<Categoria> getCategorias(int ingreeg);  
         List<Procedencia> getProcedencias();        
@@ -100,7 +101,7 @@ import com.nimagu.back.Entidades.Saldocli;
         int saveSalida(Salida salida);        
         int actualizarSalida(int idsalida,Salida salida);    
         int deleteSalida(int idsalida);
-        List<Salida> getSalidasXProv(int nroprov);
+        List<Salida> getSalidasXProv(int nroprov, int pagadas);
 
 
     }

@@ -22,6 +22,7 @@ import com.nimagu.back.Entidades.Dpagxprov;
 import com.nimagu.back.Entidades.Ingreso;
 import com.nimagu.back.Entidades.MedioPago;
 import com.nimagu.back.Entidades.Pago;
+import com.nimagu.back.Entidades.PagoComp;
 import com.nimagu.back.Entidades.Procedencia;
 import com.nimagu.back.Entidades.Proveedor;
 import com.nimagu.back.Entidades.Saldocli;
@@ -253,6 +254,7 @@ import com.nimagu.back.Entidades.Salida;
   
    @Override
    public List<Cobranza> AllCobranzaPorCliente(int nrocli) {   
+   
      String selec = "SELECT * FROM cobranza WHERE idCliente=? ORDER BY fecha DESC";
      return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Cobranza.class),nrocli);
    }
@@ -495,15 +497,40 @@ import com.nimagu.back.Entidades.Salida;
    } 
 
   @Override
-  public int savePago(Pago pago){
-  // Graba nueva cobranza 
-      return jdbcTemplate.update("INSERT INTO pagos(idPago,fecha,idProv,nomprov,nrofactura,importe,"+
+  @Transactional
+  public int savePago(PagoComp pago){
+    // Graba nuevo pago (Cabecera y detalle)
+    // Cabecera de Pago -INSERT
+    int resu = 0;
+    resu =  jdbcTemplate.update("INSERT INTO pagos(idPago,fecha,idProv,nomprov,nrofactura,importe,"+
                                  "nroegreso,observaciones) "+
                                  "VALUES(?,?,?,?,?,?,?,?)",
-          new Object[] { pago.getIdPago(),pago.getFecha(),pago.getIdProv(),pago.getNomprov(),
-                         pago.getNrofactura(),pago.getImporte(),pago.getNroegreso(),
-                         pago.getObservaciones()
-          });    
+          new Object[] { pago.getCabpago().getIdPago(),pago.getCabpago().getFecha(),
+                         pago.getCabpago().getIdProv(),pago.getCabpago().getNomprov(),
+                         pago.getCabpago().getNrofactura(),pago.getCabpago().getImporte(),
+                         pago.getCabpago().getNroegreso(),pago.getCabpago().getObservaciones()
+           });  
+    
+    // Detalle de Pago - INSERT
+     for (var i=0;i<pago.getDetpago().length;i++){
+       resu =  jdbcTemplate.update("INSERT INTO detpago(idPago,nroitem,idmpago,nmpago,fecha,nrompago,banco,"+
+                                  " fecvto,importe,ctadest,comentario) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+           new Object[] { pago.getDetpago()[i].getIdPago(),pago.getDetpago()[i].getNroitem(),
+                          pago.getDetpago()[i].getIdmpago(),pago.getDetpago()[i].getNmpago(),
+                          pago.getDetpago()[i].getFecha(),pago.getDetpago()[i].getNrompago(),
+                          pago.getDetpago()[i].getBanco(),pago.getDetpago()[i].getFecvto(),
+                          pago.getDetpago()[i].getImporte(),pago.getDetpago()[i].getCtadest(),
+                          pago.getDetpago()[i].getComentario() });    
+       
+     };
+     // Actualiza el "idpago" en la tabla de salidas
+     resu = jdbcTemplate.update("UPDATE salidas SET idpago=? "+
+                                   "WHERE idSalida=?",
+                                 
+            new Object[] {pago.getCabpago().getIdPago(),pago.getCabpago().getNroegreso()});
+
+    
+   return resu;
   }
 
   @Override
@@ -531,6 +558,21 @@ import com.nimagu.back.Entidades.Salida;
     }
     return resu;
   }
+  /*   private   int    idPago;
+     private   Date   fechac;
+     private   int    idProv;
+     private   String nomprov;
+     private   String nrofactura;
+     private   double importec;
+     private   int    nroitem;
+     private   String nmpago;
+     private   Date   fechad;
+     private   String nrompago;
+     private   String banco;
+     private   Date   fecvto;
+     private   double imported;
+     private   int    ctadest;
+     private   String comentario; */
 @Override
 public List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf){
       String selec = "SELECT " + 
@@ -718,12 +760,18 @@ public List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf){
       return resu;
     }    
     @Override
-    public List<Ingreso> getIngresosXCliente(int nrocli){
+    public List<Ingreso> getIngresosXCliente(int nrocli,int cobrados){
+      if (cobrados==0){ // no cobrados
+        String selec = "SELECT * FROM ingresos WHERE idcliente=? AND idcobro=0 ORDER BY fecha DESC LIMIT 30";
+        return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Ingreso.class),nrocli);
+      } else if (cobrados==1){ // cobrados
+          String selec = "SELECT * FROM ingresos WHERE idcliente=? AND idcobro>0 ORDER BY fecha DESC LIMIT 30";
+          return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Ingreso.class),nrocli);
+       } else { // todos
       String selec = "SELECT * FROM ingresos WHERE idcliente=? ORDER BY fecha DESC LIMIT 30";
       return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Ingreso.class),nrocli);
-
      }
-    
+    }
    
     @Override
     public List<MedioPago> getMediosPago(){
@@ -824,19 +872,17 @@ public List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf){
       return resu;
     }    
      @Override
-    public List<Salida> getSalidasXProv(int nroprov){
+    public List<Salida> getSalidasXProv(int nroprov,int pagadas){
+      if (pagadas==0){ // no pagadas
+        String selec = "SELECT * FROM salidas WHERE idprov=? AND idpago=0 ORDER BY fecha DESC";
+        return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Salida.class),nroprov);
+      } else if (pagadas==1){ // pagadas
+          String selec = "SELECT * FROM salidas WHERE idprov=? AND idpago>0 ORDER BY fecha DESC";
+          return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Salida.class),nroprov);
+       } else { // todas
       String selec = "SELECT * FROM salidas WHERE idprov=? ORDER BY fecha DESC";
       return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Salida.class),nroprov);
 
      }
-  
-  
-}
-    
-    
-    
-    
-
-     
-
-    
+    }
+  }

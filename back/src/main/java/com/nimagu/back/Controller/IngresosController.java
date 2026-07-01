@@ -91,9 +91,12 @@ public class IngresosController {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR );
       }
     }
-   @RequestMapping(value ="/ingresosxcli" , params={"idcliente"} )
-    public ResponseEntity<List<Ingreso>> getIngresosxCliente(@RequestParam("idcliente") int nrocli) {
-      List<Ingreso> ingresos = degrosRepository.getIngresosXCliente(nrocli);      
+   @RequestMapping(value ="/ingresosxcli" , params={"idcliente","cobrados"} )
+    // 0-No cobrados, 1-Cobrados 2-Todos
+    public ResponseEntity<List<Ingreso>> getIngresosxCliente(@RequestParam("idcliente") Integer nrocli,
+                                                            @RequestParam("cobrados") Integer cobrados
+  ) {
+      List<Ingreso> ingresos = degrosRepository.getIngresosXCliente(nrocli,cobrados);      
       if ( ingresos != null){
         return new ResponseEntity<>(ingresos, HttpStatus.OK);
       } else {
