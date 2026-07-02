@@ -617,9 +617,15 @@ public List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf){
 
   }*/
   @Override
-  public List<Detpago> AllDetPagoPorId(int nropago) {   
-    String selec = "SELECT * FROM detpago WHERE idPago=? ORDER BY nroitem";
-    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Detpago.class),nropago);
+  public List<Detpago> AllDetPagoPorId(int nropago, int ctadestino) {   
+    if (ctadestino==0){// devolver lo NO transferido
+       String selec = "SELECT * FROM detpago WHERE idPago=? AND ctadest=0 ORDER BY nroitem";
+       return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Detpago.class),nropago);
+    } else { // devolver todo
+      String selec = "SELECT * FROM detpago WHERE idPago=? ORDER BY nroitem";
+      return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Detpago.class),nropago);
+    }
+   
   }
 
   @Override

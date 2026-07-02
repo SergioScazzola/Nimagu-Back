@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Pago;
 import com.nimagu.back.Entidades.PagoComp;
-import com.nimagu.back.Entidades.Dcobxcli;
+
 import com.nimagu.back.Entidades.Detpago;
 import com.nimagu.back.Entidades.Dpagxprov;
 import com.nimagu.back.Repository.JdbcDegrosRepository;
@@ -135,12 +135,15 @@ public class PagoController {
 
   // ITEMS DE DETALLE DE PAGOS
 
-  @GetMapping(value="/detalle", params={"idpago"})
-  public ResponseEntity<List<Detpago>> getAllDetPago(@RequestParam("idpago") Integer idpag) {
+  @GetMapping(value="/detalle", params={"idpago","ctadestino"})
+   // si ctadestino = 1 : devuelve todos los items, si es = 0 devuelve lo NO transferido : 
+    // ctadestino = 0 
+  public ResponseEntity<List<Detpago>> getAllDetPago(@RequestParam("idpago") Integer idpag,
+                                                     @RequestParam("ctadestino") Integer ctad) {
  try {
    List<Detpago> detpago = null;
          
-   detpago = degrosRepository.AllDetPagoPorId(idpag);
+   detpago = degrosRepository.AllDetPagoPorId(idpag,ctad);
  
    if (detpago.isEmpty()) {
      return new ResponseEntity<>(HttpStatus.NO_CONTENT);

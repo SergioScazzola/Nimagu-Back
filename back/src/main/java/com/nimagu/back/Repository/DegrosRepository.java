@@ -77,7 +77,7 @@ import com.nimagu.back.Entidades.Saldocli;
         int actualizarPago(Pago pago);
         int deletePago(int idpag);
         List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf);
-        List<Detpago> AllDetPagoPorId(int idpag);
+        List<Detpago> AllDetPagoPorId(int idpag,int ctadest);
         int getCantDetPagosPorId(int idpag);
         int saveItemDetPago(Detpago detpago);
         int actualizarCtaDestinoPag(int idpag,int iditem,int ctadestino); 
