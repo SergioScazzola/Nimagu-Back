@@ -3,89 +3,154 @@ package com.nimagu.back.Entidades;
 import java.util.Date;
 
 public class MovCta {
-  int          idCuenta;
-  int          nromov;
-  Date         fechamov;
-  String       ingegre;
-  String       tipocomp;
-  String       comprob;
-  String       concepto;
-  double       importe;
-  String       coment;
+  private int          idCuenta;
+  private int          nromov;
+  private Date         fecha;
+  private Date         fechamov;
+  private int          cliprov;
+  private String       ingegre;
+  private String       tipomov;
+  private String       nrocheque;
+  private String       descrip;
+  private String       nroliq;
+  private double       importe;
+  private String       coment;
+  private int          movvinc; 
+
 
   public MovCta() {}
+
 
   public int getIdCuenta() {
     return idCuenta;
   }
 
+
   public void setIdCuenta(int idCuenta) {
     this.idCuenta = idCuenta;
   }
+
 
   public int getNromov() {
     return nromov;
   }
 
+
   public void setNromov(int nromov) {
     this.nromov = nromov;
   }
+
 
   public Date getFechamov() {
     return fechamov;
   }
 
+
   public void setFechamov(Date fechamov) {
     this.fechamov = fechamov;
   }
+
 
   public String getIngegre() {
     return ingegre;
   }
 
+
   public void setIngegre(String ingegre) {
     this.ingegre = ingegre;
   }
 
-  public String getTipocomp() {
-    return tipocomp;
+
+  public String getTipomov() {
+    return tipomov;
   }
 
-  public void setTipocomp(String tipocomp) {
-    this.tipocomp = tipocomp;
+
+  public void setTipomov(String tipomov) {
+    this.tipomov = tipomov;
   }
 
-  public String getComprob() {
-    return comprob;
+
+  public String getNrocheque() {
+    return nrocheque;
   }
 
-  public void setComprob(String comprob) {
-    this.comprob = comprob;
+
+  public void setNrocheque(String nrocheque) {
+    this.nrocheque = nrocheque;
   }
 
-  public String getConcepto() {
-    return concepto;
+
+  public String getDescrip() {
+    return descrip;
   }
 
-  public void setConcepto(String concepto) {
-    this.concepto = concepto;
+
+  public void setDescrip(String descrip) {
+    this.descrip = descrip;
   }
+
+
+  public String getNroliq() {
+    return nroliq;
+  }
+
+
+  public void setNroliq(String nroliq) {
+    this.nroliq = nroliq;
+  }
+
 
   public double getImporte() {
     return importe;
   }
 
+
   public void setImporte(double importe) {
     this.importe = importe;
   }
+
 
   public String getComent() {
     return coment;
   }
 
+
   public void setComent(String coment) {
     this.coment = coment;
   }
+
+
+  public Date getFecha() {
+    return fecha;
+  }
+
+
+  public void setFecha(Date fecha) {
+    this.fecha = fecha;
+  }
+
+
+  public int getMovvinc() {
+    return movvinc;
+  }
+
+
+  public void setMovvinc(int movvinc) {
+    this.movvinc = movvinc;
+  }
+
+
+  public int getCliprov() {
+    return cliprov;
+  }
+
+
+  public void setCliprov(int cliprov) {
+    this.cliprov = cliprov;
+  }
+
+ 
 
   
 }

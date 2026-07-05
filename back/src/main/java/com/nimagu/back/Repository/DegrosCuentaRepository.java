@@ -3,6 +3,7 @@ package com.nimagu.back.Repository;
 import java.util.List;
 
 import com.nimagu.back.Entidades.CuentaB;
+import com.nimagu.back.Entidades.Endoso;
 import com.nimagu.back.Entidades.MovCta;
 
 public interface DegrosCuentaRepository {
@@ -22,5 +23,13 @@ int           saveMovCuenta(MovCta movcuenta);
 int           actualizarMovCuenta(MovCta movcuenta); 
 int           deleteMovCuenta(int idcta,int idmovim);
 int           deleteCuentaB(int idcuenta);
+
+List<Endoso>  AllEndosos();
+List<Endoso>  AllEndososXCuenta(int idcta);
+int           getMaxEndososCta(int idcta);
+Endoso        findEndosoById(int idcuenta, int idmovim);
+int           saveEndoso(Endoso endoso);
+int           actualizarEndoso(Endoso endoso);
+int           deleteEndoso(int idcuenta, int idmovim);
 
 }

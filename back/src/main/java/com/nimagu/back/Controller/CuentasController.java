@@ -2,7 +2,7 @@ package com.nimagu.back.Controller;
 
 
 import com.nimagu.back.Entidades.CuentaB;
-
+import com.nimagu.back.Entidades.Endoso;
 import com.nimagu.back.Entidades.MovCta;
 import com.nimagu.back.Repository.DegrosCuentaRepository;
 
@@ -175,7 +175,90 @@ try {
 
 }
 
+// ENDOSOS
 
+  @GetMapping("/endosos")
+    public ResponseEntity<List<Endoso>> getAllEndosos() {
+    List<Endoso> endosos = null;   
+    try {
+                 
+      endosos = degrosctarepo.AllEndosos();
+    
+      if (endosos==null || endosos.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(endosos, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+       return new ResponseEntity<>(endosos, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @RequestMapping(value="/endososXCuenta", params={"idcuenta"})
+    public ResponseEntity<List<Endoso>> getAllEndososXCuenta(@RequestParam("idcuenta") Integer idcta) {
+    List<Endoso> endosos = null;   
+    try {
+                 
+      endosos = degrosctarepo.AllEndososXCuenta(idcta);
+    
+      if (endosos==null || endosos.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(endosos, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+       return new ResponseEntity<>(endosos, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @RequestMapping(value="/endoso/max", params={"idcuenta"})
+  public int getCantidadEndosos(@RequestParam("idcuenta") Integer idcta){
+     int cantc = degrosctarepo.getMaxEndososCta(idcta);
+     return cantc;
+  }
+
+ 
+  @RequestMapping(value="/endoso" , params={"idcta","idmov"} )
+  public ResponseEntity<Endoso> getEndosoById(@RequestParam("idcta") Integer idcuenta,
+                                              @RequestParam("idmov") Integer idmovim) {
+    Endoso endoso = degrosctarepo.findEndosoById(idcuenta,idmovim);
+    if (endoso != null){
+      return new ResponseEntity<>(endoso, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+    @PostMapping(value="/endoso/nuevo")
+    // Graba una nueva cuenta
+    public ResponseEntity<String> crearEndoso(@RequestBody Endoso endoso) {
+       try {
+        int nroendoso = degrosctarepo.saveEndoso(endoso);
+        return new ResponseEntity<>(Integer.toString(nroendoso), HttpStatus.CREATED);
+       } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+    @PutMapping(value="/endoso/actualizar")
+    public ResponseEntity<String> updateEndoso(@RequestBody Endoso endoso){
+      try {
+        int resultado = degrosctarepo.actualizarEndoso(endoso);    
+        return new ResponseEntity<>(Integer.toString(resultado), HttpStatus.OK);
+      } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+     
+      } 
+    }
+    @DeleteMapping(value="/endoso/borrar", params={"idcta","idmov"})    
+    public ResponseEntity<String> borrarEndoso(@RequestParam("idcta") Integer idcuenta,
+                                               @RequestParam("idmov") Integer idmovim){
+      try {
+        int nrocta = degrosctarepo.deleteEndoso(idcuenta, idmovim);
+        return new ResponseEntity<>(Integer.toString(nrocta),HttpStatus.OK);
+      } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR );
+      }
+
+    }
 
 
 }
