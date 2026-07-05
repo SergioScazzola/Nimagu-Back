@@ -29,6 +29,7 @@ import com.nimagu.back.Entidades.Saldocli;
 
 import com.nimagu.back.Entidades.Saldoprov;
 import com.nimagu.back.Entidades.Salida;
+import com.nimagu.back.Entidades.TipoMov;
 
     
     @Repository
@@ -727,12 +728,12 @@ public List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf){
     public int saveIngreso(Ingreso ing){
     // Graba nuevo Cliente 
         return jdbcTemplate.update("INSERT INTO ingresos(idingre,fecha,idcliente,ncliente,"+
-                                   "nroliq,idcat,categoria,cantidad,tkilos,precioun,importe,"+
-                                   "proced,idcobro,observ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                   "nroliq,idcat,categoria,importe,"+
+                                   "proced,idcobro,observ) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
       
             new Object[] {ing.getIdingre(),ing.getFecha(),ing.getIdcliente(),ing.getNcliente(),
-                          ing.getNroliq(),ing.getIdcat(),ing.getCategoria(),ing.getCantidad(),
-                          ing.getTkilos(),ing.getPrecioun(),ing.getImporte(),ing.getProced(),
+                          ing.getNroliq(),ing.getIdcat(),ing.getCategoria(),
+                          ing.getImporte(),ing.getProced(),
                           ing.getIdcobro(),ing.getObserv()
             });    
     }
@@ -742,13 +743,13 @@ public List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf){
     int resu = 0;
     try {                   
         resu = jdbcTemplate.update("UPDATE ingresos SET fecha=?,idcliente=?,ncliente=?,"+
-                                   "nroliq=?,idcat=?,categoria=?,cantidad=?,tkilos=?,precioun=?,"+
+                                   "nroliq=?,idcat=?,categoria=?,"+
                                    "importe=?,proced=?,idcobro=?,observ=? "+
                                    "WHERE idingre=?",
                                  
             new Object[] {ing.getFecha(),ing.getIdcliente(),ing.getNcliente(),
-                          ing.getNroliq(),ing.getIdcat(),ing.getCategoria(),ing.getCantidad(),
-                          ing.getTkilos(),ing.getPrecioun(),ing.getImporte(),ing.getProced(),
+                          ing.getNroliq(),ing.getIdcat(),ing.getCategoria(),
+                          ing.getImporte(),ing.getProced(),
                           ing.getIdcobro(),ing.getObserv(),ing.getIdingre() });
       } catch (IncorrectResultSizeDataAccessException e) {
         return -3;
@@ -780,9 +781,9 @@ public List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf){
     }
    
     @Override
-    public List<MedioPago> getMediosPago(){
-      String selec = "SELECT * FROM mediospago ORDER BY mediopago ASC";
-      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(MedioPago.class));
+    public List<TipoMov> getTiposMov(){
+      String selec = "SELECT * FROM tiposmov ORDER BY tipomov ASC";
+      return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(TipoMov.class));
     }
 
     @Override
@@ -839,13 +840,12 @@ public List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf){
     public int saveSalida(Salida sal){
     // Graba nueva Salida
         return jdbcTemplate.update("INSERT INTO salidas(idSalida,fecha,idprov,nprov,"+
-                                   "nroliq,idcat,categoria,cantidad,tkilos,precioun,importe,"+
-                                   "proced,idpago,observ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                   "nroliq,idcat,categoria,importe,"+
+                                   "proced,idpago,observ) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
       
             new Object[] {sal.getIdSalida(),sal.getFecha(),sal.getIdprov(),sal.getNprov(),
-                          sal.getNroliq(),sal.getIdcat(),sal.getCategoria(),sal.getCantidad(),
-                          sal.getTkilos(),sal.getPrecioun(),sal.getImporte(),sal.getProced(),
-                          sal.getIdpago(),sal.getObserv()
+                          sal.getNroliq(),sal.getIdcat(),sal.getCategoria(),sal.getImporte(),
+                          sal.getProced(),sal.getIdpago(),sal.getObserv()
             });    
     }
         
@@ -854,13 +854,13 @@ public List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf){
     int resu = 0;
     try {                   
         resu = jdbcTemplate.update("UPDATE salidas SET fecha=?,idprov=?,nprov=?,"+
-                                   "nroliq=?,idcat=?,categoria=?,cantidad=?,tkilos=?,precioun=?,"+
+                                   "nroliq=?,idcat=?,categoria=?,"+
                                    "importe=?,proced=?,idpago=?,observ=? "+
                                    "WHERE idSalida=?",
                                  
             new Object[] {sal.getFecha(),sal.getIdprov(),sal.getNprov(),
-                          sal.getNroliq(),sal.getIdcat(),sal.getCategoria(),sal.getCantidad(),
-                          sal.getTkilos(),sal.getPrecioun(),sal.getImporte(),sal.getProced(),
+                          sal.getNroliq(),sal.getIdcat(),sal.getCategoria(),
+                          sal.getImporte(),sal.getProced(),
                           sal.getIdpago(),sal.getObserv(),sal.getIdSalida()});
       } catch (IncorrectResultSizeDataAccessException e) {
         return -3;

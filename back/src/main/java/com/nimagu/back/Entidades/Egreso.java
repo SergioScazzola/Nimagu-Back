@@ -9,10 +9,7 @@ public class Egreso {
   private String     nprov;
   private String     nroliq;
   private int        idcat;
-  private String     categoria;
-  private float      cantidad;
-  private float      tkilos;
-  private float      precioun;
+  private String     categoria; 
   private double     importe;
   private String     proced;
   private int        idpago;
@@ -74,30 +71,6 @@ public class Egreso {
 
   public void setCategoria(String categoria) {
     this.categoria = categoria;
-  }
-
-  public float getCantidad() {
-    return cantidad;
-  }
-
-  public void setCantidad(float cantidad) {
-    this.cantidad = cantidad;
-  }
-
-  public float getTkilos() {
-    return tkilos;
-  }
-
-  public void setTkilos(float tkilos) {
-    this.tkilos = tkilos;
-  }
-
-  public float getPrecioun() {
-    return precioun;
-  }
-
-  public void setPrecioun(float precioun) {
-    this.precioun = precioun;
   }
 
   public double getImporte() {

@@ -19,6 +19,7 @@ import com.nimagu.back.Entidades.Categoria;
 import com.nimagu.back.Entidades.Ingreso;
 import com.nimagu.back.Entidades.MedioPago;
 import com.nimagu.back.Entidades.Procedencia;
+import com.nimagu.back.Entidades.TipoMov;
 import com.nimagu.back.Repository.JdbcDegrosRepository;
 
 @CrossOrigin(origins = "${FRONTEND_URL}")
@@ -104,11 +105,11 @@ public class IngresosController {
       }
     }
 
-     @RequestMapping(value ="/mediospago"  )
-    public ResponseEntity<List<MedioPago>> getMediosPago() {
-      List<MedioPago> mpagos = degrosRepository.getMediosPago();      
-      if ( mpagos != null){
-        return new ResponseEntity<>(mpagos, HttpStatus.OK);
+     @RequestMapping(value ="/tiposmov"  )
+    public ResponseEntity<List<TipoMov>> getTiposMov() {
+      List<TipoMov> tiposmov = degrosRepository.getTiposMov();      
+      if ( tiposmov != null){
+        return new ResponseEntity<>(tiposmov, HttpStatus.OK);
       } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }

@@ -20,6 +20,7 @@ import com.nimagu.back.Entidades.PagoComp;
 import com.nimagu.back.Entidades.Procedencia;
 import com.nimagu.back.Entidades.Saldoprov;
 import com.nimagu.back.Entidades.Salida;
+import com.nimagu.back.Entidades.TipoMov;
 import com.nimagu.back.Entidades.Proveedor;
 import com.nimagu.back.Entidades.Saldocli;
 
@@ -91,7 +92,7 @@ import com.nimagu.back.Entidades.Saldocli;
         int actualizarIngreso(int idingreso,Ingreso ingreso);    
         int deleteIngreso(int idingreso);
         List<Ingreso> getIngresosXCliente(int nrocli,int cobrados);  
-        List<MedioPago> getMediosPago();                
+        List<TipoMov> getTiposMov();                
         List<Categoria> getCategorias(int ingreeg);  
         List<Procedencia> getProcedencias();        
 
