@@ -124,6 +124,27 @@ public class CuentasController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+   @GetMapping(value="/cuentasb/detalleXTipoMov",params={"idcuenta","mov1","mov2"})
+    // Del detalle de la cuenta "idcuenta" devuelve los movimientos del tipo "tipomov"
+    public ResponseEntity<List<MovCta>> getDetalleXTipo(@RequestParam("idcuenta") int  idcta,
+                                                        @RequestParam("mov1") String tm1,
+                                                        @RequestParam("mov2") String tm2)
+    {                                                             
+                                                                                                                       
+    try {
+      List<MovCta> movims = null;
+            
+      movims = degrosctarepo.detalleCuentaXtipo(idcta,tm1,tm2);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+   }
   @RequestMapping(value ="/cuentab" , params={"idcuenta","idmov"} )
   public ResponseEntity<MovCta> getMovCuentaById( @RequestParam("idcuenta") Integer idcta,
                                                   @RequestParam("idmov") Integer idmovim) {
@@ -211,17 +232,16 @@ try {
     }
   }
 
-  @RequestMapping(value="/endoso/max", params={"idcuenta"})
-  public int getCantidadEndosos(@RequestParam("idcuenta") Integer idcta){
-     int cantc = degrosctarepo.getMaxEndososCta(idcta);
+  @RequestMapping(value="/endoso/max")
+  public int getCantidadEndosos(){
+     int cantc = degrosctarepo.getMaxEndosos();
      return cantc;
   }
 
  
-  @RequestMapping(value="/endoso" , params={"idcta","idmov"} )
-  public ResponseEntity<Endoso> getEndosoById(@RequestParam("idcta") Integer idcuenta,
-                                              @RequestParam("idmov") Integer idmovim) {
-    Endoso endoso = degrosctarepo.findEndosoById(idcuenta,idmovim);
+  @RequestMapping(value="/endoso" , params={"idendoso"} )
+  public ResponseEntity<Endoso> getEndosoById(@RequestParam("idendoso") Integer idendo ) {
+    Endoso endoso = degrosctarepo.findEndosoById(idendo);
     if (endoso != null){
       return new ResponseEntity<>(endoso, HttpStatus.OK);
     } else {
@@ -248,11 +268,12 @@ try {
      
       } 
     }
-    @DeleteMapping(value="/endoso/borrar", params={"idcta","idmov"})    
-    public ResponseEntity<String> borrarEndoso(@RequestParam("idcta") Integer idcuenta,
-                                               @RequestParam("idmov") Integer idmovim){
+    @DeleteMapping(value="/endoso/borrar", params={"idendoso","idcuenta","nromov"})    
+    public ResponseEntity<String> borrarEndoso(@RequestParam("idendoso") Integer idendo,
+                                               @RequestParam("idcuenta") Integer idcta,
+                                               @RequestParam("nromov")   Integer nrom){
       try {
-        int nrocta = degrosctarepo.deleteEndoso(idcuenta, idmovim);
+        int nrocta = degrosctarepo.deleteEndoso(idendo,idcta,nrom);
         return new ResponseEntity<>(Integer.toString(nrocta),HttpStatus.OK);
       } catch (Exception e) {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR );

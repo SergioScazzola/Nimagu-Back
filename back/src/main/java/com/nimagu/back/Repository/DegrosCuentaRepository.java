@@ -17,6 +17,7 @@ int           actualizarCuenta(CuentaB cuenta);
 int           getExisteCBUPer(String periodo, String cbu);
 
 List<MovCta>  detalleCuenta(int idcta, String fechaini, String fechafin);
+List<MovCta>  detalleCuentaXtipo(int idcta, String tm1, String tm2);
 int           getMaxMovCta(int idcta);
 MovCta        findMovCuentaById(int idcta, int idmovim);
 int           saveMovCuenta(MovCta movcuenta);
@@ -26,10 +27,10 @@ int           deleteCuentaB(int idcuenta);
 
 List<Endoso>  AllEndosos();
 List<Endoso>  AllEndososXCuenta(int idcta);
-int           getMaxEndososCta(int idcta);
-Endoso        findEndosoById(int idcuenta, int idmovim);
+int           getMaxEndosos();
+Endoso        findEndosoById(int idendo);
 int           saveEndoso(Endoso endoso);
 int           actualizarEndoso(Endoso endoso);
-int           deleteEndoso(int idcuenta, int idmovim);
+int           deleteEndoso(int idendo,int idcta,int nmov);
 
 }

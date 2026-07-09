@@ -20,7 +20,7 @@ import com.nimagu.back.Entidades.Detpago;
 import com.nimagu.back.Entidades.Dpagxprov;
 
 import com.nimagu.back.Entidades.Ingreso;
-import com.nimagu.back.Entidades.MedioPago;
+
 import com.nimagu.back.Entidades.Pago;
 import com.nimagu.back.Entidades.PagoComp;
 import com.nimagu.back.Entidades.Procedencia;
@@ -167,7 +167,7 @@ import com.nimagu.back.Entidades.TipoMov;
 
 
     // PROVEEDORES
-     // PROVEEDORES
+   
    @Override
    public List<Proveedor> AllProvs(){
       String selec = "SELECT * FROM proveedores ORDER BY nombre ASC";
@@ -187,22 +187,24 @@ import com.nimagu.back.Entidades.TipoMov;
   
    public int saveProv(Proveedor prov){
    // Graba nuevo registro de Proveedor 
-     return jdbcTemplate.update("INSERT INTO proveedores(idProv,nombre,domicilio,localidad,telefono,"+
-                                "email,notas,saldoini) "+
-                                "VALUES(?,?,?,?,?,?,?,?)",
+     return jdbcTemplate.update("INSERT INTO proveedores(idProv,nombre,domicilio,localidad,cuit,"+
+                                "telefono,email,notas,saldoini) "+
+                                "VALUES(?,?,?,?,?,?,?,?,?)",
                                     
-         new Object[] { prov.getIdProv(),prov.getNombre(),prov.getDomicilio(),prov.getLocalidad(),prov.getTelefono(),
-                        prov.getEmail(),prov.getNotas(),prov.getSaldoini(),
+         new Object[] { prov.getIdProv(),prov.getNombre(),prov.getDomicilio(),prov.getLocalidad(),
+                        prov.getCuit(),prov.getTelefono(),prov.getEmail(),prov.getNotas(),
+                        prov.getSaldoini(),
                          });    
    }
    public int actualizarProv(Proveedor prove){
    int resu = 0;
    try {
-    resu = jdbcTemplate.update("UPDATE proveedores SET nombre=?,domicilio=?,localidad=?,telefono=?,"+
-                                "email=?,notas=?,saldoini=? WHERE idProv=?",                                
+    resu = jdbcTemplate.update("UPDATE proveedores SET nombre=?,domicilio=?,localidad=?,cuit=?"+
+                                "telefono=?,email=?,notas=?,saldoini=? WHERE idProv=?",                                
                                     
-         new Object[] { prove.getNombre(),prove.getDomicilio(),prove.getLocalidad(),prove.getTelefono(),
-                        prove.getEmail(),prove.getNotas(),prove.getSaldoini(),prove.getIdProv()
+         new Object[] { prove.getNombre(),prove.getDomicilio(),prove.getLocalidad(),prove.getCuit(),
+                        prove.getTelefono(),prove.getEmail(),prove.getNotas(),prove.getSaldoini(),
+                        prove.getIdProv()
                          });    
 
    } catch (IncorrectResultSizeDataAccessException e) {

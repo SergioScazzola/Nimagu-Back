@@ -5,6 +5,7 @@ public class Proveedor {
         private String  nombre;     
         private String  domicilio;
         private String  localidad;
+        private String  cuit;
         private String  telefono;
         private String  email;
         private String  notas;
@@ -78,6 +79,16 @@ public class Proveedor {
 
         public void setIdProv(int idProv) {
             this.idProv = idProv;
+        }
+
+
+        public String getCuit() {
+            return cuit;
+        }
+
+
+        public void setCuit(String cuit) {
+            this.cuit = cuit;
         }                      
       
       

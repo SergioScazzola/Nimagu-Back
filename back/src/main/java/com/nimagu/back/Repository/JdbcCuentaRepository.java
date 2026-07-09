@@ -8,6 +8,7 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nimagu.back.Entidades.CuentaB;
 import com.nimagu.back.Entidades.Endoso;
@@ -125,8 +126,24 @@ public List<MovCta>  detalleCuenta(int idcta, String fechaini, String fechafin){
    String selec = "SELECT * FROM movcuenta WHERE idCuenta=? AND fechamov BETWEEN ? AND ? ORDER BY fechamov ASC";
         return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovCta.class),idcta,fechaini,fechafin);
    }   
-
-
+@Override
+public List<MovCta>  detalleCuentaXtipo(int idcta, String tm1,String tm2){
+  List<MovCta> lista = null;
+  if (tm1!=null && tm2==null){
+     String selec = "SELECT * FROM movcuenta WHERE idCuenta=? AND tipomov=? ORDER BY fechamov DESC LIMIT 30";
+     return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovCta.class),idcta,tm1);
+  } else {
+    if (tm1!=null && tm2!=null){ //cheques o e-checks ingresados y no endosados
+      String selec = "SELECT * FROM movcuenta WHERE idCuenta=? AND (tipomov=? OR tipomov=?) "+
+                               "AND movvinc=0 AND ingegre='IN' ORDER BY fechamov DESC LIMIT 30";
+     return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovCta.class),idcta,tm1,tm2);
+    } else {
+      return lista;
+    }
+      
+  }
+  
+}
 @Override
 public MovCta findMovCuentaById(int idcta, int idmovim){
   String q = "SELECT * FROM movcuenta WHERE idCuenta=? AND nromov=?";
@@ -188,51 +205,75 @@ public int saveMovCuenta(MovCta movcuenta){
 // ENDOSOS
 @Override
 public List<Endoso> AllEndosos() {
-    String q = "SELECT * FROM endoso";
+    String q = "SELECT * FROM endosos";
     return jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(Endoso.class));
 }
 
 @Override
 public List<Endoso> AllEndososXCuenta(int idcta) {
-    String q = "SELECT * FROM endoso WHERE idCuenta = ?";
+    String q = "SELECT * FROM endosos WHERE idCuenta = ?";
     return jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(Endoso.class), idcta);
 }
 
 @Override
-public int getMaxEndososCta(int idcta) {
-    String q = "SELECT MAX(nromov) FROM endoso WHERE idCuenta = ?";
-    return jdbcTemplate.queryForObject(q, Integer.class, idcta);
+public int getMaxEndosos() {
+    String q = "SELECT MAX(idendoso) FROM endosos";
+    Object obj = jdbcTemplate.queryForObject(q,Integer.class);    
+    if (obj==null){
+       return 0;
+    } else {
+       return ((int)obj);
+    }    
+   
 }
 
 @Override
-public Endoso findEndosoById(int idcuenta, int idmovim) {
-    String q = "SELECT * FROM endoso WHERE idCuenta = ? AND nromov = ?";
+public Endoso findEndosoById(int idendo) {
+    String q = "SELECT * FROM endosos WHERE idendoso=?";
     try {
-        return jdbcTemplate.queryForObject(q, BeanPropertyRowMapper.newInstance(Endoso.class), idcuenta, idmovim);
+        return jdbcTemplate.queryForObject(q, BeanPropertyRowMapper.newInstance(Endoso.class), idendo);
     } catch (IncorrectResultSizeDataAccessException e) {
         return null;
     }
 }
 
 @Override
+@Transactional
 public int saveEndoso(Endoso endoso) {
-    return jdbcTemplate.update("INSERT INTO endoso(idCuenta,nromov,fecha,nrocheque,idprov,"+
-                               "descrip) VALUES(?,?,?,?,?,?)",
-            new Object[] { endoso.getIdCuenta(), endoso.getNromov(), endoso.getFecha(),
-                    endoso.getNrocheque(), endoso.getIdprov(), endoso.getDescrip()
+  // Graba el endoso en la tabla de endosos y 
+  // además marca el movimiento correspondiente en el detalle de la cuenta
+    int resu = 0;
+    resu = jdbcTemplate.update("INSERT INTO endosos(idendoso,idCuenta,nromov,fecha,nrocheque,idprov,"+
+                               "descrip,importe) VALUES(?,?,?,?,?,?,?,?)",
+            new Object[] { endoso.getIdendoso(),endoso.getIdCuenta(), endoso.getNromov(),
+                           endoso.getFecha(),endoso.getNrocheque(), endoso.getIdprov(),
+                           endoso.getDescrip(),endoso.getImporte()
             });
+    resu = jdbcTemplate.update("UPDATE movcuenta SET movvinc=? "+
+                              "WHERE idCuenta=? AND nromov=?",                                 
+            new Object[] {endoso.getIdendoso(),endoso.getIdCuenta(),endoso.getNromov()});
+  return resu;
 }
 
 @Override
 public int actualizarEndoso(Endoso endoso) {
-    return jdbcTemplate.update("UPDATE endoso SET fecha=?,nrocheque=?,idprov=?,descrip=? "+
-                               "WHERE idCuenta=? AND nromov=?",
-            new Object[] { endoso.getFecha(), endoso.getNrocheque(),endoso.getIdprov(),
-                           endoso.getDescrip(),endoso.getIdCuenta(),endoso.getNromov() });
+    return jdbcTemplate.update("UPDATE endosos SET idCuenta=?,nromov=?,fecha=?,nrocheque=?,idprov=?,"+
+                               "descrip=?,importe=? WHERE idendoso=?",
+            new Object[] { endoso.getIdCuenta(),endoso.getNromov(),endoso.getFecha(),
+                           endoso.getNrocheque(),endoso.getIdprov(),
+                           endoso.getDescrip(),endoso.getImporte(),endoso.getIdendoso() });
 }
 
 @Override
-public int deleteEndoso(int idcuenta, int idmovim) {
-    return jdbcTemplate.update("DELETE FROM endoso WHERE idCuenta=? AND nromov=?", idcuenta, idmovim);
+@Transactional
+public int deleteEndoso(int idendo, int idcta, int nmov ) {
+  // borra el endoso y desmarca el movimiento correspondiente de la cuenta bancaria
+  int resu = 0;
+  resu = jdbcTemplate.update("DELETE FROM endosos WHERE idendoso=?",idendo);
+  resu = jdbcTemplate.update("UPDATE movcuenta SET movvinc=0 WHERE idCuenta=? AND nromov=?",
+                             idcta,nmov);
+
+  return resu;
+
 }
 }

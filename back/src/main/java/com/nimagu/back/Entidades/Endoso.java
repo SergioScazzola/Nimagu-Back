@@ -3,16 +3,19 @@ package com.nimagu.back.Entidades;
 import java.util.Date;
 
 public class Endoso {
+   private int    idendoso;
    private int    idCuenta;
    private int    nromov;
    private Date   fecha;
    private String nrocheque;   
    private int    idprov;
    private String descrip;
+   private double importe;
 
     public Endoso() {
     }
 
+    
     public int getIdCuenta() {
         return idCuenta;
     }
@@ -59,6 +62,26 @@ public class Endoso {
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+
+
+    public int getIdendoso() {
+        return idendoso;
+    }
+
+
+    public void setIdendoso(int idendoso) {
+        this.idendoso = idendoso;
+    }
+
+
+    public double getImporte() {
+        return importe;
+    }
+
+
+    public void setImporte(double importe) {
+        this.importe = importe;
     }
 
     
