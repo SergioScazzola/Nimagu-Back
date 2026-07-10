@@ -199,7 +199,7 @@ import com.nimagu.back.Entidades.TipoMov;
    public int actualizarProv(Proveedor prove){
    int resu = 0;
    try {
-    resu = jdbcTemplate.update("UPDATE proveedores SET nombre=?,domicilio=?,localidad=?,cuit=?"+
+    resu = jdbcTemplate.update("UPDATE proveedores SET nombre=?,domicilio=?,localidad=?,cuit=?,"+
                                 "telefono=?,email=?,notas=?,saldoini=? WHERE idProv=?",                                
                                     
          new Object[] { prove.getNombre(),prove.getDomicilio(),prove.getLocalidad(),prove.getCuit(),

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Categoria;
 import com.nimagu.back.Entidades.Ingreso;
-import com.nimagu.back.Entidades.MedioPago;
+
 import com.nimagu.back.Entidades.Procedencia;
 import com.nimagu.back.Entidades.TipoMov;
 import com.nimagu.back.Repository.JdbcDegrosRepository;
