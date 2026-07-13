@@ -8,7 +8,7 @@ public class CompVta {
   private String compvta;  // compra o venta
   private Date   fecha;
   private int    idprocli; // proveedor o cliente
-  private int    nprovcli;
+  private String nprovcli;
   private String nroliq;
   private String categoria;
   private float  cantidad;
@@ -53,11 +53,11 @@ public class CompVta {
     this.idprocli = idprocli;
   }
 
-  public int getNprovcli() {
+  public String getNprovcli() {
     return nprovcli;
   }
 
-  public void setNprovcli(int nprovcli) {
+  public void setNprovcli(String nprovcli) {
     this.nprovcli = nprovcli;
   }
 

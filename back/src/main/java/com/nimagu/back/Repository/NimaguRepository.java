@@ -8,6 +8,7 @@ import com.nimagu.back.Entidades.CompVta;
 public interface NimaguRepository {
 
 List<CompVta> AllCompVtas();
+List<CompVta> detalleCyFxFecha(String fechaini,String fechafin);
 int           getMaxCompVtas();
 CompVta       findCompVtaById(int idcomp);
 int           saveCompVta(CompVta comp);

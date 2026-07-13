@@ -124,6 +124,7 @@ public class CuentasController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
    @GetMapping(value="/cuentasb/detalleXTipoMov",params={"idcuenta","mov1","mov2"})
     // Del detalle de la cuenta "idcuenta" devuelve los movimientos del tipo "tipomov"
     public ResponseEntity<List<MovCta>> getDetalleXTipo(@RequestParam("idcuenta") int  idcta,
@@ -181,6 +182,8 @@ try {
    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
      
 } 
+
+
 }
 
 

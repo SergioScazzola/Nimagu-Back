@@ -16,6 +16,7 @@ public class MovCta {
   private double       importe;
   private String       coment;
   private int          movvinc; 
+  private int          marcada;
 
 
   public MovCta() {}
@@ -148,6 +149,16 @@ public class MovCta {
 
   public void setCliprov(int cliprov) {
     this.cliprov = cliprov;
+  }
+
+
+  public int getMarcada() {
+    return marcada;
+  }
+
+
+  public void setMarcada(int marcada) {
+    this.marcada = marcada;
   }
 
  

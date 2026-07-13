@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 
 import com.nimagu.back.Entidades.CompVta;
+import com.nimagu.back.Entidades.MovCta;
 
 
 
@@ -29,9 +30,15 @@ public class JdbcNimaguRepository implements NimaguRepository{
         return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(CompVta.class));
 }
 
+ @Override
+public List<CompVta> detalleCyFxFecha(String fechaini,String fechafin){
+    String selec = "SELECT * FROM compvtas WHERE fecha BETWEEN ? AND ? ORDER BY fecha ASC";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(CompVta.class),fechaini,fechafin);
+}
+
 @Override
 public int getMaxCompVtas(){
-        String consulta = "SELECT MAX(idcompvta) FROM compvtas";
+        String consulta = "SELECT MAX(idcomvta) FROM compvtas";
      
         Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
         if (obj==null){
@@ -43,7 +50,7 @@ public int getMaxCompVtas(){
 
 @Override
 public  CompVta  findCompVtaById(int idcomp){
-  String q = "SELECT * FROM compvtas WHERE idcompvta=?";
+  String q = "SELECT * FROM compvtas WHERE idcomvta=?";
   try {
   CompVta comp = jdbcTemplate.queryForObject(q,
        BeanPropertyRowMapper.newInstance(CompVta.class), idcomp);          

@@ -1,6 +1,7 @@
 package com.nimagu.back.Controller;
 
 import com.nimagu.back.Entidades.CompVta;
+import com.nimagu.back.Entidades.MovCta;
 import com.nimagu.back.Repository.JdbcNimaguRepository;
 
 import java.util.List;
@@ -86,5 +87,22 @@ public class CompVtasController {
       } catch (Exception e) {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR );
       }
+  }
+   @GetMapping(value="/DetCyVxFecha",params={"feci","fecf"})
+    public ResponseEntity<List<CompVta>> getDetalleCyV(  @RequestParam("feci") String fechaini,
+                                                         @RequestParam("fecf") String fechafin) {
+    try {
+      List<CompVta> movims = null;
+            
+      movims = nimaguRepository.detalleCyFxFecha(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
