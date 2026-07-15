@@ -94,6 +94,7 @@ import com.nimagu.back.Entidades.Saldocli;
         List<Ingreso> getIngresosXCliente(int nrocli,int cobrados);  
         List<TipoMov> getTiposMov();                
         List<Categoria> getCategorias(int ingreeg);  
+        int saveCategoria(Categoria categoria);
         List<Procedencia> getProcedencias();        
 
         List<Salida> AllSalidas();

@@ -122,9 +122,16 @@ public int deleteCuentaB(int idcuenta){
 // Movimientos de cuentas bancarias
 @Override
 // Devuelve el detalle de la cuenta "idcta" entre "fechaini" y "fechafin"
+// si fechaini y fechafin son vacios, devuelve todos los de la cuenta
 public List<MovCta>  detalleCuenta(int idcta, String fechaini, String fechafin){
-   String selec = "SELECT * FROM movcuenta WHERE idCuenta=? AND fechamov BETWEEN ? AND ? ORDER BY fechamov ASC";
-        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovCta.class),idcta,fechaini,fechafin);
+  // if (fechaini.isEmpty() && fechafin.isEmpty()){
+  String selec = "SELECT * FROM movcuenta WHERE idCuenta=? ORDER BY fechamov ASC";
+  return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovCta.class),idcta); 
+  // } else {
+  //    String selec = "SELECT * FROM movcuenta WHERE idCuenta=? AND fechamov BETWEEN ? AND ? ORDER BY fechamov ASC";
+  //    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovCta.class),idcta,fechaini,fechafin);
+  // }
+   
    }   
 @Override
 public List<MovCta>  detalleCuentaXtipo(int idcta, String tm1,String tm2){

@@ -3,7 +3,7 @@ package com.nimagu.back.Entidades;
 public class Categoria {
     private int     idCategoria;
     private String  nombre;
-    private int     ingeg; // 0-todos 1-ingreso 2-egreso
+    private String  ingeg; // INEG-todos ING-ingreso EGR-egreso
    
 
     public Categoria(){}
@@ -24,11 +24,11 @@ public class Categoria {
         this.nombre = nombre;
     }
 
-  public int getIngeg() {
+  public String getIngeg() {
         return ingeg;
     }
 
-    public void setIngeg(int ingeg) {
+    public void setIngeg(String ingeg) {
         this.ingeg = ingeg;
     }
 

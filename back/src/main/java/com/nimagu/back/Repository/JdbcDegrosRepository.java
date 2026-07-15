@@ -790,17 +790,30 @@ public List<Dpagxprov> DetPagoPorProvyF(int idpro,String fechi,String fechf){
 
     @Override
     public List<Categoria> getCategorias(int ingegre){
+      //0: Todas, 1: Ingreso y ambas, 2: Egreso y ambas
       String selec = "";
       if (ingegre==0){
         selec = "SELECT * FROM categorias ORDER BY nombre ASC";
          return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Categoria.class));
       } else {
-        selec = "SELECT * FROM categorias WHERE ingeg=? ORDER BY nombre ASC";
-        return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Categoria.class),ingegre);
-      }      
-      
+        if (ingegre==1){
+         selec = "SELECT * FROM categorias WHERE (ingeg=? OR ingeg=?) ORDER BY nombre ASC";
+         return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Categoria.class),"ING","INGEG");
+        } else {
+          selec = "SELECT * FROM categorias WHERE (ingeg=? OR ingeg=?) ORDER BY nombre ASC";
+          return jdbcTemplate.query(selec,BeanPropertyRowMapper.newInstance(Categoria.class),"EGR","INGEG");
+        }        
+      }            
     }
-
+  @Override
+    public int saveCategoria(Categoria cate){
+    // Graba nuevo Cliente 
+        return jdbcTemplate.update("INSERT INTO categorias(idCategoria,nombre,ingeg) "+
+                                   "VALUES (?,?,?)",
+      
+            new Object[] { cate.getIdCategoria(),cate.getNombre(),cate.getIngeg()
+            });    
+    }
      @Override
     public List<Procedencia> getProcedencias(){
       String selec = "SELECT * FROM procedencias ORDER BY idProcedencia ASC";

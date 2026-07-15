@@ -116,12 +116,24 @@ public class IngresosController {
     }
 
       @RequestMapping(value ="/categorias" ,params={"ingeg"} )
+      // ingeg=0 : Todas, 1 : ING,INGEG, 2 : EGR,INGEG
     public ResponseEntity<List<Categoria>> getCategorias(@RequestParam("ingeg") Integer ingreeg) {
       List<Categoria> categorias = degrosRepository.getCategorias(ingreeg);      
       if ( categorias != null){
         return new ResponseEntity<>(categorias, HttpStatus.OK);
       } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
+    }
+
+    @PostMapping(value="/categoria/nuevo")
+    // Graba una nueva categoria
+    public ResponseEntity<String> crearCategoria(@RequestBody Categoria categoria) {
+       try {
+        int nrocat = degrosRepository.saveCategoria(categoria);
+        return new ResponseEntity<>(Integer.toString(nrocat), HttpStatus.CREATED);
+       } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
 
