@@ -16,7 +16,11 @@ public class MovCta {
   private double       importe;
   private String       coment;
   private int          movvinc; 
-  private int          marcada;
+  private int          marca1;
+  private int          marca2;
+
+
+  
 
 
   public MovCta() {}
@@ -152,16 +156,23 @@ public class MovCta {
   }
 
 
-  public int getMarcada() {
-    return marcada;
+  public int getMarca1() {
+    return marca1;
   }
 
 
-  public void setMarcada(int marcada) {
-    this.marcada = marcada;
+  public void setMarca1(int marcada) {
+    this.marca1 = marcada;
   }
 
- 
+public int getMarca2() {
+    return marca2;
+  }
+
+
+  public void setMarca2(int marca2) {
+    this.marca2 = marca2;
+  } 
 
   
 }

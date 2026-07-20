@@ -166,13 +166,13 @@ public MovCta findMovCuentaById(int idcta, int idmovim){
 public int saveMovCuenta(MovCta movcuenta){
   // Graba nuevo movimiento en cuenta bancaria
         return jdbcTemplate.update("INSERT INTO movcuenta(idCuenta,nromov,fecha,fechamov,cliprov,ingegre,"+
-                                   "tipomov,nrocheque,descrip,nroliq,importe,coment,movvinc,marcada) "+
-                                   "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                   "tipomov,nrocheque,descrip,nroliq,importe,coment,movvinc,marca1,marca2) "+
+                                   "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         new Object[] { movcuenta.getIdCuenta(),movcuenta.getNromov(),movcuenta.getFecha(),
                        movcuenta.getFechamov(),movcuenta.getCliprov(),movcuenta.getIngegre(),
                        movcuenta.getTipomov(),movcuenta.getNrocheque(),movcuenta.getDescrip(),
                        movcuenta.getNroliq(),movcuenta.getImporte(),movcuenta.getComent(),
-                       movcuenta.getMovvinc(),movcuenta.getMarcada() 
+                       movcuenta.getMovvinc(),movcuenta.getMarca1(),movcuenta.getMarca2() 
                                }); 
 }
 
@@ -182,12 +182,12 @@ public int saveMovCuenta(MovCta movcuenta){
       try {                   
     resu = jdbcTemplate.update("UPDATE movcuenta SET fecha=?,fechamov=?,cliprov=?,ingegre=?,"+
                                    "tipomov=?,nrocheque=?,descrip=?,nroliq=?,importe=?,"+
-                                   "coment=?,movvinc=?,marcada=? WHERE idCuenta=? AND nromov=?",
+                                   "coment=?,movvinc=?,marca1=?,marca2=? WHERE idCuenta=? AND nromov=?",
                                  
             new Object[] {movim.getFecha(),movim.getFechamov(),movim.getCliprov(),
                           movim.getIngegre(),movim.getTipomov(),movim.getNrocheque(),
                           movim.getDescrip(),movim.getNroliq(),movim.getImporte(),
-                          movim.getComent(),movim.getMovvinc(),movim.getMarcada(),
+                          movim.getComent(),movim.getMovvinc(),movim.getMarca1(),movim.getMarca2(),
                           movim.getIdCuenta(),movim.getNromov()                               
                        });
                       
