@@ -4,6 +4,8 @@ package com.nimagu.back.Controller;
 import com.nimagu.back.Entidades.CuentaB;
 import com.nimagu.back.Entidades.Endoso;
 import com.nimagu.back.Entidades.MovCta;
+import com.nimagu.back.Entidades.SaldoCta;
+import com.nimagu.back.Entidades.SaldoMov;
 import com.nimagu.back.Repository.DegrosCuentaRepository;
 
 import java.util.List;
@@ -123,6 +125,16 @@ public class CuentasController {
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  @GetMapping(value="/cuentasb/saldoentrefec",params={"idcuenta","feci","fecf"})
+  // devuelve el saldo de la cuenta "idcuenta" entre las fechas "feci" y "fecf"
+  // tomando como base el saldo inicial de la cuenta
+  public SaldoMov getSaldoEntreFechas (@RequestParam("idcuenta") int  idcta,
+                                       @RequestParam("feci") String fechaini,
+                                       @RequestParam("fecf") String fechafin){
+    SaldoMov saldom = degrosctarepo.saldoEntreFechas(idcta, fechaini, fechafin);
+    return saldom;
   }
 
    @GetMapping(value="/cuentasb/detalleXTipoMov",params={"idcuenta","mov1","mov2"})
@@ -283,6 +295,15 @@ try {
       }
 
     }
+
+    // SALDOS INICIALES DE CUENTAS
+
+  @GetMapping(value="/cuentasb/saldoscta",params={"idcuenta"})
+  // devuelve los saldos iniciales de la cuenta bancaria : "idcuenta"
+  public List<SaldoCta> getSaldosIniciales (@RequestParam("idcuenta") int  idcta){
+    List<SaldoCta> saldoc = degrosctarepo.saldosInicialesCta(idcta);
+    return saldoc;
+  }
 
 
 }

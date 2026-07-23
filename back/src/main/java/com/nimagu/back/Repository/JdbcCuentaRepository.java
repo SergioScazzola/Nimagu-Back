@@ -7,12 +7,17 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nimagu.back.Entidades.CuentaB;
 import com.nimagu.back.Entidades.Endoso;
 import com.nimagu.back.Entidades.MovCta;
+import com.nimagu.back.Entidades.SaldoCta;
+import com.nimagu.back.Entidades.SaldoMov;
 
 
 
@@ -21,9 +26,16 @@ import com.nimagu.back.Entidades.MovCta;
 @Repository
 public class JdbcCuentaRepository implements DegrosCuentaRepository{
 
- @Autowired
- private JdbcTemplate jdbcTemplate;
-     
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
+
+    @Autowired
+    public JdbcCuentaRepository(JdbcTemplate jdbcTemplate,
+                                NamedParameterJdbcTemplate namedJdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedJdbcTemplate = namedJdbcTemplate; }
+
+
  @Override
  public List<CuentaB> AllCuentasb() {   
         String selec = "SELECT * FROM cuentasb ORDER BY banco ASC";
@@ -124,15 +136,48 @@ public int deleteCuentaB(int idcuenta){
 // Devuelve el detalle de la cuenta "idcta" entre "fechaini" y "fechafin"
 // si fechaini y fechafin son vacios, devuelve todos los de la cuenta
 public List<MovCta>  detalleCuenta(int idcta, String fechaini, String fechafin){
-  // if (fechaini.isEmpty() && fechafin.isEmpty()){
+  if (fechaini.isEmpty() || fechaini==null){
   String selec = "SELECT * FROM movcuenta WHERE idCuenta=? ORDER BY fechamov ASC";
-  return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovCta.class),idcta); 
-  // } else {
-  //    String selec = "SELECT * FROM movcuenta WHERE idCuenta=? AND fechamov BETWEEN ? AND ? ORDER BY fechamov ASC";
-  //    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovCta.class),idcta,fechaini,fechafin);
-  // }
-   
-   }   
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovCta.class),idcta); 
+  } else {
+      String selec = "SELECT * FROM movcuenta WHERE idCuenta=? AND fechamov BETWEEN ? AND ? ORDER BY fechamov ASC";
+      return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovCta.class),idcta,fechaini,fechafin);
+  }   
+}   
+
+   @Override 
+   public SaldoMov saldoEntreFechas(int idcta,String fechaini, String fechafin){
+    // query para calcular el saldo de una cuenta entre dos fechas
+    // devuelve un objeto SaldoMov con el total y la cantidad de movimientos
+    String selec = "SELECT c.saldoini + "+
+                      "COALESCE(SUM("+
+                        "CASE "+
+                        "WHEN m.ingegre = 'IN' THEN m.importe - COALESCE(e.importe, 0) "+
+                        "WHEN m.ingegre = 'EG' THEN -m.importe "+
+                        "ELSE 0 "+
+                        "END "+
+                        "), 0) AS totsaldo,"+
+                    "COUNT(m.nromov) AS cantidad "+
+                    "FROM cuentasb c "+
+                      "LEFT JOIN movcuenta m ON c.idCuenta = m.idCuenta "+
+                                 "AND m.fechamov BETWEEN :desde AND :hasta "+
+                      "LEFT JOIN endosos e ON e.idendoso = m.movvinc "+
+                      "WHERE c.idCuenta = :idcuenta "+
+                      "GROUP BY c.idCuenta, c.saldoini";
+
+     MapSqlParameterSource params = new MapSqlParameterSource()       
+        .addValue("desde", fechaini)
+        .addValue("hasta", fechafin)
+        .addValue("idcuenta", idcta);
+       
+     SaldoMov saldom = namedJdbcTemplate.queryForObject(
+        selec,
+        params,
+        new BeanPropertyRowMapper<>(SaldoMov.class)
+     );
+     return saldom;
+                            
+   }
 @Override
 public List<MovCta>  detalleCuentaXtipo(int idcta, String tm1,String tm2){
   List<MovCta> lista = null;
@@ -283,4 +328,13 @@ public int deleteEndoso(int idendo, int idcta, int nmov ) {
   return resu;
 
 }
+// SALDOS INICIALES DE CUENTA
+
+@Override 
+public List<SaldoCta> saldosInicialesCta(int idcta){
+    String q = "SELECT * FROM saldoscta WHERE idcuenta=? ORDER BY fechasaldo DESC";
+    return jdbcTemplate.query(q, BeanPropertyRowMapper.newInstance(SaldoCta.class),idcta);  
+
+}
+
 }
