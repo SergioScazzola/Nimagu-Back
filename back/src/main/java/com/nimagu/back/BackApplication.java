@@ -25,7 +25,12 @@ public class BackApplication {
     public static class DotenvInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
         public void initialize(ConfigurableApplicationContext applicationContext) {
+
+
             Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+
+            System.out.println("HOST_DB = " + dotenv.get("HOST_DB"));
+            
             Map<String, Object> envProperties = new HashMap<>();
             
             // Copiar las variables directamente al entorno de Spring

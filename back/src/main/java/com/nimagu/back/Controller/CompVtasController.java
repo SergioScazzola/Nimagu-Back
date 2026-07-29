@@ -1,7 +1,7 @@
 package com.nimagu.back.Controller;
 
 import com.nimagu.back.Entidades.CompVta;
-import com.nimagu.back.Entidades.MovCta;
+
 import com.nimagu.back.Repository.JdbcNimaguRepository;
 
 import java.util.List;
@@ -105,4 +105,59 @@ public class CompVtasController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+@GetMapping(value="/DetCliProvF",params={"feci","fecf"})
+public ResponseEntity<List<CompVta>>  detalleCliProvF(  @RequestParam("feci") String fechaini,
+                                                        @RequestParam("fecf") String fechafin) {
+    try {
+      List<CompVta> movims = null;
+            
+      movims = nimaguRepository.detalleCliProvyFecha(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+@GetMapping(value="/DetCatyF",params={"feci","fecf"})
+public ResponseEntity<List<CompVta>>  detalleCatyF(  @RequestParam("feci") String fechaini,
+                                                     @RequestParam("fecf") String fechafin) {
+    try {
+      List<CompVta> movims = null;
+            
+      movims = nimaguRepository.detalleCatyFecha(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+@GetMapping(value="/DetProcyF",params={"feci","fecf"})
+public ResponseEntity<List<CompVta>>  detalleProcyF(  @RequestParam("feci") String fechaini,
+                                                      @RequestParam("fecf") String fechafin) {
+    try {
+      List<CompVta> movims = null;
+            
+      movims = nimaguRepository.detalleProcyFecha(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
 }

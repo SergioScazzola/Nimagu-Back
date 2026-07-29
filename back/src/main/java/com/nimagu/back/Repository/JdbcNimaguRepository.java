@@ -37,6 +37,31 @@ public List<CompVta> detalleCyFxFecha(String fechaini,String fechafin){
 }
 
 @Override
+public List<CompVta> detalleCVyFecha(String fechaini,String fechafin){
+    String selec = "SELECT * FROM compvtas WHERE fecha BETWEEN ? AND ? ORDER BY compvta ASC,fecha ASC";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(CompVta.class),fechaini,fechafin);
+}
+
+@Override
+public List<CompVta> detalleCliProvyFecha(String fechaini,String fechafin){
+    String selec = "SELECT * FROM compvtas WHERE fecha BETWEEN ? AND ? ORDER BY nprovcli ASC,fecha ASC";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(CompVta.class),fechaini,fechafin);
+}
+
+@Override
+public List<CompVta> detalleCatyFecha(String fechaini,String fechafin){
+    String selec = "SELECT * FROM compvtas WHERE fecha BETWEEN ? AND ? ORDER BY categoria ASC,fecha ASC";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(CompVta.class),fechaini,fechafin);
+}
+
+@Override
+public List<CompVta> detalleProcyFecha(String fechaini,String fechafin){
+    String selec = "SELECT * FROM compvtas WHERE fecha BETWEEN ? AND ? ORDER BY proced ASC,fecha ASC";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(CompVta.class),fechaini,fechafin);
+}
+
+
+@Override
 public int getMaxCompVtas(){
         String consulta = "SELECT MAX(idcomvta) FROM compvtas";
      

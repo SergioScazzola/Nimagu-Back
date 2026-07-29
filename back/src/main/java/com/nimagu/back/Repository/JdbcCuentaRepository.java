@@ -149,7 +149,8 @@ public List<MovCta>  detalleCuenta(int idcta, String fechaini, String fechafin){
    public SaldoMov saldoEntreFechas(int idcta,String fechaini, String fechafin){
     // query para calcular el saldo de una cuenta entre dos fechas
     // devuelve un objeto SaldoMov con el total y la cantidad de movimientos
-    String selec = "SELECT c.saldoini + "+
+    // no considera saldo inicial
+    String selec = "SELECT "+
                       "COALESCE(SUM("+
                         "CASE "+
                         "WHEN m.ingegre = 'IN' THEN m.importe - COALESCE(e.importe, 0) "+
