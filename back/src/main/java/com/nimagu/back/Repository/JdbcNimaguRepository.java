@@ -9,9 +9,14 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-
+import com.nimagu.back.Entidades.Campo;
 import com.nimagu.back.Entidades.CompVta;
-import com.nimagu.back.Entidades.MovCta;
+import com.nimagu.back.Entidades.Gasto;
+import com.nimagu.back.Entidades.Hacienda;
+import com.nimagu.back.Entidades.MovHacienda;
+import com.nimagu.back.Entidades.Producto;
+import com.nimagu.back.Entidades.TipoProd;
+
 
 
 
@@ -60,6 +65,11 @@ public List<CompVta> detalleProcyFecha(String fechaini,String fechafin){
     return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(CompVta.class),fechaini,fechafin);
 }
 
+@Override
+public List<CompVta> detalleporCYV(String fechaini,String fechafin){
+    String selec = "SELECT * FROM compvtas WHERE fecha BETWEEN ? AND ? ORDER BY compvta ASC,fecha ASC";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(CompVta.class),fechaini,fechafin);
+}
 
 @Override
 public int getMaxCompVtas(){
@@ -129,5 +139,316 @@ public int deleteCompVta(int idcomp){
         return resu;
       }
       
+// PRODUCTOS
+
+ @Override
+ public List<Producto> AllProds() {   
+        String selec = "SELECT * FROM productos ORDER BY nprod ASC";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Producto.class));
+}
+
+@Override
+public  Producto  findProdById(int idprod){
+  String q = "SELECT * FROM productos WHERE idproducto=?";
+  try {
+  Producto prod = jdbcTemplate.queryForObject(q,
+       BeanPropertyRowMapper.newInstance(Producto.class), idprod);          
+      return prod;
+   } catch (IncorrectResultSizeDataAccessException e) {
+      return null;
+   }
+}
+@Override 
+public int saveProd(Producto prod){
+        // Graba nuevo Producto
+        return jdbcTemplate.update("INSERT INTO productos(idproducto,nombre,idtipo,tipoprod) VALUES(?,?,?,?)",
+        new Object[] { prod.getIdproducto(),prod.getNombre(),prod.getIdtipo(),prod.getTipoprod()
+        });
+         
+}
+ @Override
+ public int actualizarProd(Producto prod){      
+      int resu = 0;
+      try {                   
+          resu = jdbcTemplate.update("UPDATE productos SET nombre=?,idtipo=?,tipoprod=? "+
+                                    "WHERE idproducto=?",
+                                    
+                    new Object[] { prod.getNombre(),prod.getIdtipo(),prod.getTipoprod(),prod.getIdproducto()
+                                });
+        } catch (IncorrectResultSizeDataAccessException e) {
+          return -3;
+      }
+      return resu; 
+}
+@Override
+public int getMaxIdProd(){
+        String consulta = "SELECT MAX(idproducto) FROM productos";
+     
+        Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+        if (obj==null){
+          return 0;
+        } else {
+          return ((int)obj);
+        }         
+}   
+
+@Override
+public int deleteProducto(int idprod){
+        int resu = 0;
+        try {
+          resu = jdbcTemplate.update("DELETE FROM productos WHERE idproducto="+idprod);
+        } catch (DataAccessException dae){
+          resu = -5;   
+        }
+        return resu;
+      }
+
+// TIPOS DE PRODUCTO
+
+ @Override
+ public List<TipoProd> AllTProds() {   
+        String selec = "SELECT * FROM tiposprod ORDER BY nombre ASC";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(TipoProd.class));
+}
+
+@Override
+public int getMaxIdTProd(){
+        String consulta = "SELECT MAX(idtipoprod) FROM tiposprod";
+     
+        Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+        if (obj==null){
+          return 0;
+        } else {
+          return ((int)obj);
+        }         
+}   
+
+@Override 
+public int saveTProd(TipoProd tprod){
+        // Graba nuevo Tipo de producto
+        return jdbcTemplate.update("INSERT INTO tiposprod(idtipoprod,nombre) VALUES(?,?)",
+        new Object[] { tprod.getIdtipoprod(),tprod.getNombre()
+        });         
+}
+
+@Override
+public int deleteTProducto(int idtprod){
+        int resu = 0;
+        try {
+          resu = jdbcTemplate.update("DELETE FROM tiposprod WHERE idtipoprod="+idtprod);
+        } catch (DataAccessException dae){
+          resu = -5;   
+        }
+        return resu;
+      }
+
+// GASTOS
+
+ @Override
+ public List<Gasto> AllGastos() {   
+        String selec = "SELECT * FROM gastos ORDER BY fecha ASC";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Gasto.class));
+}
+
+@Override
+public int getMaxIdGasto(){
+        String consulta = "SELECT MAX(idgasto) FROM gastos";
+     
+        Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+        if (obj==null){
+          return 0;
+        } else {
+          return ((int)obj);
+        }         
+}   
+@Override
+public  Gasto findGastoById(int idgasto){
+  String q = "SELECT * FROM gastos WHERE idgasto=?";
+  try {
+ Gasto gasto = jdbcTemplate.queryForObject(q,
+       BeanPropertyRowMapper.newInstance(Gasto.class), idgasto);          
+      return gasto;
+   } catch (IncorrectResultSizeDataAccessException e) {
+      return null;
+   }
+}
+
+@Override 
+public int saveGasto(Gasto gasto){
+        // Graba nuevo Gasto
+        return jdbcTemplate.update("INSERT INTO gastos(idgasto,fecha,idproducto,nprod,idtipo,ntipo,"+           
+                                   "idprov,nprov,ncomp,cantidad,precioun,tiva,importe,"+
+                                   "observ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        new Object[] { gasto.getIdgasto(),gasto.getFecha(),gasto.getIdproducto(),gasto.getNprod(),
+                       gasto.getIdtipo(),gasto.getNtipo(),gasto.getIdprov(),gasto.getNprov(),
+                       gasto.getNcomp(),gasto.getCantidad(),gasto.getPrecioun(),gasto.getTiva(),
+                       gasto.getImporte(),gasto.getObserv() });
+}                       
+
+ @Override
+ public int actualizarGasto(Gasto gasto){      
+      int resu = 0;
+      try {                   
+          resu = jdbcTemplate.update("UPDATE gastos SET fecha=?,idproducto=?,nprod=?,idtipo=?,ntipo=?,"+           
+                                   "idprov=?,nprov=?,ncomp=?,cantidad=?,precioun=?,tiva=?,importe=?,"+
+                                   "observ=? WHERE idgasto=?",
+                    new Object[] {gasto.getFecha(),gasto.getIdproducto(),gasto.getNprod(),
+                       gasto.getIdtipo(),gasto.getNtipo(),gasto.getIdprov(),gasto.getNprov(),
+                       gasto.getNcomp(),gasto.getCantidad(),gasto.getPrecioun(),gasto.getTiva(),
+                       gasto.getImporte(),gasto.getObserv(),gasto.getIdgasto()
+                                });
+        } catch (IncorrectResultSizeDataAccessException e) {
+          return -3;
+      }
+      return resu; 
+}
+@Override
+public int deleteGasto(int idgasto){
+        int resu = 0;
+        try {
+          resu = jdbcTemplate.update("DELETE FROM gastos WHERE idgasto="+idgasto);
+        } catch (DataAccessException dae){
+          resu = -5;   
+        }
+        return resu;
+      }
+
+
+// HACIENDA 
+
+@Override
+ public List<Hacienda> AllHacienda() {   
+        String selec = "SELECT * FROM hacienda ORDER BY nombre ASC";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Hacienda.class));
+}
+
+@Override 
+public int saveHacienda(Hacienda hac){
+        // Graba nueva Hacienda
+        return jdbcTemplate.update("INSERT INTO hacienda(idhacienda,nombre) VALUES(?,?)",
+        new Object[] { hac.getIdhacienda(),hac.getNombre()
+        });         
+}
+
+@Override
+public int getMaxIdHacienda(){
+        String consulta = "SELECT MAX(idhacienda) FROM hacienda";
+     
+        Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+        if (obj==null){
+          return 0;
+        } else {
+          return ((int)obj);
+        }         
+}   
+
+@Override
+public int deleteHacienda(int idhac){
+        int resu = 0;
+        try {
+          resu = jdbcTemplate.update("DELETE FROM hacienda WHERE idhacienda="+idhac);
+        } catch (DataAccessException dae){
+          resu = -5;   
+        }
+        return resu;
+}
+
+@Override
+ public List<Campo> AllCampos() {   
+        String selec = "SELECT * FROM campos ORDER BY nombre ASC";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Campo.class));
+}
+
+@Override 
+public int saveCampo(Campo campo){
+        // Graba nuevo Campo
+        return jdbcTemplate.update("INSERT INTO campos(idcampo,nombre,abrev,proced) VALUES(?,?,?,?)",
+        new Object[] {campo.getIdcampo(),campo.getNombre(),campo.getAbrev(),campo.getProced()
+        });         
+}
+
+@Override
+public int getMaxIdCampo(){
+        String consulta = "SELECT MAX(idcampo) FROM campos";
+     
+        Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+        if (obj==null){
+          return 0;
+        } else {
+          return ((int)obj);
+        }         
+}  
+
+@Override
+public int deleteCampo(int idcampo){
+        int resu = 0;
+        try {
+          resu = jdbcTemplate.update("DELETE FROM campos WHERE idcampo="+idcampo);
+        } catch (DataAccessException dae){
+          resu = -5;   
+        }
+        return resu;
+}
+
+@Override
+ public List<MovHacienda> AllMovsHacienda() {   
+        String selec = "SELECT * FROM movhacienda ORDER BY fecha ASC";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovHacienda.class));
+}
+
+@Override 
+public int saveMovH(MovHacienda movh){
+        // Graba nuevo Movimiento de Hacienda
+        return jdbcTemplate.update("INSERT INTO movhacienda(idmovh,fecha,idhacienda,nhacienda,"+                   
+                                   "cantidad,idcampo,ncampo,observ,marca1,marca2,marca3) "+
+                                   "VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+        new Object[] {movh.getIdmovh(),movh.getFecha(),movh.getIdhacienda(),movh.getNhacienda(),
+                      movh.getCantidad(),movh.getIdcampo(),movh.getNcampo(),movh.getObserv(),
+                      movh.getMarca1(),movh.getMarca2(),movh.getMarca3()
+        });         
+}
+
+@Override
+public int getMaxIdMovH(){
+        String consulta = "SELECT MAX(idmovh) FROM movhacienda";
+     
+        Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+        if (obj==null){
+          return 0;
+        } else {
+          return ((int)obj);
+        }         
+}  
+
+ @Override
+ public int actualizarMovH(MovHacienda movh){      
+      int resu = 0;
+      try {                   
+          resu = jdbcTemplate.update("UPDATE movhacienda SET fecha=?,idhacienda=?,nhacienda=?,"+                   
+                                   "cantidad=?,idcampo=?,ncampo=?,observ=?,marca1=?,marca2=?,marca3=? "+
+                                   "WHERE idmovh=?",
+                                    
+                    new Object[] { movh.getFecha(),movh.getIdhacienda(),movh.getNhacienda(),
+                                   movh.getCantidad(),movh.getIdcampo(),movh.getNcampo(),movh.getObserv(),
+                                   movh.getMarca1(),movh.getMarca2(),movh.getMarca3(),movh.getIdmovh()
+                                });
+        } catch (IncorrectResultSizeDataAccessException e) {
+          return -3;
+      }
+      return resu; 
+}
+
+@Override
+public int deleteMovH(int idmov){
+        int resu = 0;
+        try {
+          resu = jdbcTemplate.update("DELETE FROM movhacienda WHERE idmovh="+idmov);
+        } catch (DataAccessException dae){
+          resu = -5;   
+        }
+        return resu;
+}
+
 
 }
+

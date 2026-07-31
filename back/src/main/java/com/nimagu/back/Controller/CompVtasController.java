@@ -158,6 +158,22 @@ public ResponseEntity<List<CompVta>>  detalleProcyF(  @RequestParam("feci") Stri
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
+@GetMapping(value="/DetCYV",params={"feci","fecf"})
+public ResponseEntity<List<CompVta>>  detalleCYV(  @RequestParam("feci") String fechaini,
+                                                   @RequestParam("fecf") String fechafin) {
+    try {
+      List<CompVta> movims = null;
+            
+      movims = nimaguRepository.detalleporCYV(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
 }

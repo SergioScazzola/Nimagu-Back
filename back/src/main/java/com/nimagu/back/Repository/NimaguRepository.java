@@ -2,7 +2,13 @@ package com.nimagu.back.Repository;
 
 import java.util.List;
 
+import com.nimagu.back.Entidades.Campo;
 import com.nimagu.back.Entidades.CompVta;
+import com.nimagu.back.Entidades.Gasto;
+import com.nimagu.back.Entidades.Hacienda;
+import com.nimagu.back.Entidades.MovHacienda;
+import com.nimagu.back.Entidades.Producto;
+import com.nimagu.back.Entidades.TipoProd;
 
 
 public interface NimaguRepository {
@@ -13,12 +19,43 @@ List<CompVta> detalleCVyFecha(String fechaini,String fechafin);        //Compra/
 List<CompVta> detalleCliProvyFecha(String fechaini,String fechafin);   // Cli/Prov    y fecha
 List<CompVta> detalleCatyFecha(String fechaini,String fechafin);       // categoria   y fecha
 List<CompVta> detalleProcyFecha(String fechaini,String fechafin);      // procedencia y fecha
+List<CompVta> detalleporCYV(String fechaini,String fechafin);          // compra y venta
 int           getMaxCompVtas();
 CompVta       findCompVtaById(int idcomp);
 int           saveCompVta(CompVta comp);
 int           actualizarCompVta(CompVta comp);   
 int           deleteCompVta(int idcomp);
 
+List<Producto> AllProds();
+Producto       findProdById(int idprod);
+int            saveProd(Producto prod);
+int            actualizarProd(Producto prod);    
+int            getMaxIdProd();
+int            deleteProducto(int idprod);
+List<TipoProd> AllTProds();
+int            getMaxIdTProd();
+int            saveTProd(TipoProd tprod);
+int            deleteTProducto(int idtprod);
 
+List<Gasto>    AllGastos();
+Gasto         findGastoById(int idgasto);
+int            saveGasto(Gasto gasto);
+int            actualizarGasto(Gasto gasto);   
+int            getMaxIdGasto();
+int            deleteGasto(int idgasto);
+
+List<Hacienda> AllHacienda();
+int            saveHacienda(Hacienda hac);
+int            getMaxIdHacienda();
+int            deleteHacienda(int idhac);
+List<Campo>    AllCampos();
+int            saveCampo(Campo campo);
+int            getMaxIdCampo();
+int            deleteCampo(int idcampo);
+List<MovHacienda> AllMovsHacienda();
+int            saveMovH(MovHacienda movh);
+int            getMaxIdMovH();
+int            actualizarMovH(MovHacienda movh);  
+int            deleteMovH(int idmovh);  
 
 }
