@@ -66,7 +66,7 @@ public class SecurityConfig {
     /**
      * Spring Security detecta automáticamente este bean y aplica CORS
      */
-     @Bean
+    /* @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
@@ -81,7 +81,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
-    }
+    }*/
     /*@Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

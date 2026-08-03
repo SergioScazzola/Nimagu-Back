@@ -10,6 +10,7 @@ public class MovHacienda {
     private int      cantidad;
     private int      idcampo;
     private String   ncampo;
+    private String   abrev;
     private String   observ;
     private int      marca1;
     private int      marca2;
@@ -103,6 +104,14 @@ public class MovHacienda {
 
     public void setMarca3(int marca3) {
         this.marca3 = marca3;
+    }
+
+    public String getAbrev() {
+        return abrev;
+    }
+
+    public void setAbrev(String abrev) {
+        this.abrev = abrev;
     }
 
     

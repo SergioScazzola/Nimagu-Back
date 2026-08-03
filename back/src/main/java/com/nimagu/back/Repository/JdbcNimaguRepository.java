@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.nimagu.back.Entidades.Campo;
 import com.nimagu.back.Entidades.CompVta;
+import com.nimagu.back.Entidades.CuentaB;
 import com.nimagu.back.Entidades.Gasto;
 import com.nimagu.back.Entidades.Hacienda;
 import com.nimagu.back.Entidades.MovHacienda;
@@ -329,13 +330,22 @@ public int saveHacienda(Hacienda hac){
         new Object[] { hac.getIdhacienda(),hac.getNombre()
         });         
 }
-
+@Override
+public Hacienda findHaciendaById(int idhacienda) {
+        String q = "SELECT * FROM hacienda WHERE idhacienda=?";
+        try {
+          Hacienda hacienda = jdbcTemplate.queryForObject(q,
+              BeanPropertyRowMapper.newInstance(Hacienda.class), idhacienda);          
+          return hacienda;
+        } catch (IncorrectResultSizeDataAccessException e) {
+          return null;
+        }
+}
 @Override
 public int getMaxIdHacienda(){
-        String consulta = "SELECT MAX(idhacienda) FROM hacienda";
-     
-        Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
-        if (obj==null){
+    String consulta = "SELECT MAX(idhacienda) FROM hacienda";   
+    Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+    if (obj==null){
           return 0;
         } else {
           return ((int)obj);
@@ -366,7 +376,30 @@ public int saveCampo(Campo campo){
         new Object[] {campo.getIdcampo(),campo.getNombre(),campo.getAbrev(),campo.getProced()
         });         
 }
-
+@Override
+public Campo findCampoById(int idcampo) {
+        String q = "SELECT * FROM campos WHERE idcampo=?";
+        try {
+          Campo campo = jdbcTemplate.queryForObject(q,
+              BeanPropertyRowMapper.newInstance(Campo.class), idcampo);          
+          return campo;
+        } catch (IncorrectResultSizeDataAccessException e) {
+          return null;
+        }
+}
+@Override
+ public int actualizarCampo(Campo campo){
+      int resu = 0;
+      try {                   
+          resu = jdbcTemplate.update("UPDATE campos SET nombre=?,abrev=?,proced=? WHERE idcampo=?",
+                    new Object[] {campo.getNombre(),campo.getAbrev(),campo.getProced(),campo.getIdcampo()
+                                });
+        } catch (IncorrectResultSizeDataAccessException e) {
+          return -3;
+      }
+      return resu; 
+ }
+ 
 @Override
 public int getMaxIdCampo(){
         String consulta = "SELECT MAX(idcampo) FROM campos";
@@ -397,15 +430,35 @@ public int deleteCampo(int idcampo){
 }
 
 @Override 
+// Lista de Movimientos de Hacienda entre dos fechas, para armar matriz de informe
+// ordenado por abreviatura de CAMPO
+public List<MovHacienda> detalleMovHxFecha(String fechaini, String fechafin){
+    String selec = "SELECT * FROM movhacienda WHERE fecha BETWEEN ? AND ? ORDER BY abrev ASC";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovHacienda.class),fechaini,fechafin);
+}
+
+@Override 
 public int saveMovH(MovHacienda movh){
         // Graba nuevo Movimiento de Hacienda
         return jdbcTemplate.update("INSERT INTO movhacienda(idmovh,fecha,idhacienda,nhacienda,"+                   
-                                   "cantidad,idcampo,ncampo,observ,marca1,marca2,marca3) "+
-                                   "VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+                                   "cantidad,idcampo,ncampo,abrev,observ,marca1,marca2,marca3) "+
+                                   "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
         new Object[] {movh.getIdmovh(),movh.getFecha(),movh.getIdhacienda(),movh.getNhacienda(),
-                      movh.getCantidad(),movh.getIdcampo(),movh.getNcampo(),movh.getObserv(),
+                      movh.getCantidad(),movh.getIdcampo(),movh.getNcampo(),movh.getAbrev(),movh.getObserv(),
                       movh.getMarca1(),movh.getMarca2(),movh.getMarca3()
         });         
+}
+
+@Override
+public  MovHacienda  findMovHById(int idmovh){
+  String q = "SELECT * FROM movhacienda WHERE idmovh=?";
+  try {
+ MovHacienda movh = jdbcTemplate.queryForObject(q,
+       BeanPropertyRowMapper.newInstance(MovHacienda.class), idmovh);          
+      return movh;
+   } catch (IncorrectResultSizeDataAccessException e) {
+      return null;
+   }
 }
 
 @Override
@@ -425,11 +478,12 @@ public int getMaxIdMovH(){
       int resu = 0;
       try {                   
           resu = jdbcTemplate.update("UPDATE movhacienda SET fecha=?,idhacienda=?,nhacienda=?,"+                   
-                                   "cantidad=?,idcampo=?,ncampo=?,observ=?,marca1=?,marca2=?,marca3=? "+
+                                   "cantidad=?,idcampo=?,ncampo=?,abrev=?,observ=?,marca1=?,marca2=?,marca3=? "+
                                    "WHERE idmovh=?",
                                     
                     new Object[] { movh.getFecha(),movh.getIdhacienda(),movh.getNhacienda(),
-                                   movh.getCantidad(),movh.getIdcampo(),movh.getNcampo(),movh.getObserv(),
+                                   movh.getCantidad(),movh.getIdcampo(),movh.getNcampo(),movh.getAbrev(),
+                                   movh.getObserv(),
                                    movh.getMarca1(),movh.getMarca2(),movh.getMarca3(),movh.getIdmovh()
                                 });
         } catch (IncorrectResultSizeDataAccessException e) {

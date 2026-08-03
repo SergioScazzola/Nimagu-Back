@@ -22,7 +22,11 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                    .allowedOriginPatterns("*") // Permitir cualquier origen
+                    .allowedOrigins(                       
+                       "http://nimagubucket.s3-website.us-east-2.amazonaws.com/",
+                       "http://localhost:4200"
+                    )
+                    //.allowedOriginPatterns("*") // Permitir cualquier origen
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .exposedHeaders("Authorization", "Content-Type")

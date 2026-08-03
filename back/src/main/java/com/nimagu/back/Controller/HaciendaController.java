@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Campo;
-
+import com.nimagu.back.Entidades.CompVta;
+import com.nimagu.back.Entidades.CuentaB;
+import com.nimagu.back.Entidades.Gasto;
 import com.nimagu.back.Entidades.Hacienda;
+import com.nimagu.back.Entidades.MovCta;
 import com.nimagu.back.Entidades.MovHacienda;
 import com.nimagu.back.Repository.JdbcNimaguRepository;
 
@@ -32,7 +35,7 @@ public class HaciendaController {
 
     @SuppressWarnings("null")
     @GetMapping("/hacs")
-    public ResponseEntity<List<Hacienda>> getGastos() {
+    public ResponseEntity<List<Hacienda>> getAllHacienda() {
     List<Hacienda> hac = null;
     try {                  
       hac = nimaguRepository.AllHacienda();
@@ -57,6 +60,15 @@ public class HaciendaController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+  @RequestMapping(value ="/hac" , params={"idhac"} )
+  public ResponseEntity<Hacienda> getHaciendaById( @RequestParam("idhac") Integer idhacienda) {
+   Hacienda hacienda = nimaguRepository.findHaciendaById(idhacienda);
+    if (hacienda != null){
+      return new ResponseEntity<>(hacienda, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
 
   @RequestMapping(value="/hac/maxid")
   public int getMaxHac(){
@@ -100,7 +112,26 @@ public class HaciendaController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+  @RequestMapping(value ="/campo" , params={"idcampo"} )
+  public ResponseEntity<Campo> getCampoById( @RequestParam("idcampo") Integer idcam) {
+   Campo campo = nimaguRepository.findCampoById(idcam);
+    if (campo != null){
+      return new ResponseEntity<>(campo, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
 
+  @PutMapping(value="/campo/actualizar")
+    public ResponseEntity<String> updateCampo(@RequestBody Campo campo){
+      try {
+        int resultado = nimaguRepository.actualizarCampo(campo);    
+        return new ResponseEntity<>(Integer.toString(resultado), HttpStatus.OK);
+      } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+     
+      } 
+    }
   @RequestMapping(value="/campo/maxid")
   public int getMaxCampo(){
      int cantl = nimaguRepository.getMaxIdCampo();
@@ -132,7 +163,23 @@ public class HaciendaController {
        return new ResponseEntity<>(movs, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
+@GetMapping(value="/DetMovh",params={"feci","fecf"})
+public ResponseEntity<List<MovHacienda>>  detalleMovH(  @RequestParam("feci") String fechaini,
+                                                   @RequestParam("fecf") String fechafin) {
+    try {
+      List<MovHacienda> movims = null;
+            
+      movims = nimaguRepository.detalleMovHxFecha(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
    @PostMapping(value="/movh/nuevo")
     // Graba un nuevo Movimiento de Hacienda
     public ResponseEntity<String> crearMovHacienda(@RequestBody MovHacienda movh) {
@@ -143,7 +190,15 @@ public class HaciendaController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
-
+ @RequestMapping(value ="/movh" , params={"id"} )
+  public ResponseEntity<MovHacienda> getMovHById(@RequestParam("id") Integer idmovh) {
+    MovHacienda movh = nimaguRepository.findMovHById(idmovh);
+    if (movh != null){
+      return new ResponseEntity<>(movh, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
   @RequestMapping(value="/movh/maxid")
   public int getMaxMovH(){
      int cantl = nimaguRepository.getMaxIdMovH();
