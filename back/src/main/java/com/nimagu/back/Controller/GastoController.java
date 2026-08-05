@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Gasto;
-import com.nimagu.back.Entidades.Producto;
+
 import com.nimagu.back.Repository.JdbcNimaguRepository;
 
 

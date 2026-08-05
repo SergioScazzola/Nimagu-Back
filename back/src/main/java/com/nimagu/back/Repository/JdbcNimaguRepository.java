@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.nimagu.back.Entidades.Campo;
 import com.nimagu.back.Entidades.CompVta;
-import com.nimagu.back.Entidades.CuentaB;
+
 import com.nimagu.back.Entidades.Gasto;
 import com.nimagu.back.Entidades.Hacienda;
 import com.nimagu.back.Entidades.MovHacienda;
@@ -144,7 +144,7 @@ public int deleteCompVta(int idcomp){
 
  @Override
  public List<Producto> AllProds() {   
-        String selec = "SELECT * FROM productos ORDER BY nprod ASC";
+        String selec = "SELECT * FROM productos ORDER BY nombre ASC";
         return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Producto.class));
 }
 
@@ -279,7 +279,7 @@ public int saveGasto(Gasto gasto){
         // Graba nuevo Gasto
         return jdbcTemplate.update("INSERT INTO gastos(idgasto,fecha,idproducto,nprod,idtipo,ntipo,"+           
                                    "idprov,nprov,ncomp,cantidad,precioun,tiva,importe,"+
-                                   "observ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                   "observ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         new Object[] { gasto.getIdgasto(),gasto.getFecha(),gasto.getIdproducto(),gasto.getNprod(),
                        gasto.getIdtipo(),gasto.getNtipo(),gasto.getIdprov(),gasto.getNprov(),
                        gasto.getNcomp(),gasto.getCantidad(),gasto.getPrecioun(),gasto.getTiva(),

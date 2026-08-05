@@ -105,7 +105,7 @@ public class CuentasController {
       }
 
     }
-
+/*    return this.http.get<movcta[]>(this.apiUrl + `cuentasb/detalle?idcuenta=`+idcuenta+`&feci=`+fechi+`&fecf=`+fechf); */
    // Movimientos en Cuentas Bancarias
    // Devuelve el detalle de la cuenta "idcuenta" entre las fechas : "feci" y "fecf"
    @GetMapping(value="/cuentasb/detalle",params={"idcuenta","feci","fecf"})
