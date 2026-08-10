@@ -38,11 +38,15 @@ int            saveTProd(TipoProd tprod);
 int            deleteTProducto(int idtprod);
 
 List<Gasto>    AllGastos();
-Gasto         findGastoById(int idgasto);
+Gasto          findGastoById(int idgasto);
 int            saveGasto(Gasto gasto);
 int            actualizarGasto(Gasto gasto);   
 int            getMaxIdGasto();
 int            deleteGasto(int idgasto);
+List<Gasto>    detalleporFecha(String fechaini, String fechafin);
+List<Gasto>    detalleporProducto(String fechaini, String fechafin);
+List<Gasto>    detalleporTipoProd(String fechaini, String fechafin);
+List<Gasto>    detalleporProveedor(String fechaini,String fechafin);
 
 List<Hacienda> AllHacienda();
 int            saveHacienda(Hacienda hac);

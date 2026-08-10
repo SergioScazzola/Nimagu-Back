@@ -91,5 +91,78 @@ public class GastoController {
       }
 
     }
+
+ @GetMapping(value="/detxfecha",params={"feci","fecf"})
+    public ResponseEntity<List<Gasto>>  detallexFecha(  @RequestParam("feci") String fechaini,
+                                                        @RequestParam("fecf") String fechafin) {
+    try {
+      List<Gasto> movims = null;
+            
+      movims = nimaguRepository.detalleporFecha(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
+    @GetMapping(value="/detxprod",params={"feci","fecf"})
+    public ResponseEntity<List<Gasto>>  detalleXProd(  @RequestParam("feci") String fechaini,
+                                                 @RequestParam("fecf") String fechafin) {
+    try {
+      List<Gasto> movims = null;
+            
+      movims = nimaguRepository.detalleporProducto(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+   @GetMapping(value="/detxtprod",params={"feci","fecf"})
+    public ResponseEntity<List<Gasto>>  detallexTipoProd(  @RequestParam("feci") String fechaini,
+                                                           @RequestParam("fecf") String fechafin) {
+    try {
+      List<Gasto> movims = null;
+            
+      movims = nimaguRepository.detalleporTipoProd(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @GetMapping(value="/detxprov",params={"feci","fecf"})
+    public ResponseEntity<List<Gasto>>  detallexProveedor(  @RequestParam("feci") String fechaini,
+                                                           @RequestParam("fecf") String fechafin) {
+    try {
+      List<Gasto> movims = null;
+            
+      movims = nimaguRepository.detalleporProveedor(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
     
 }

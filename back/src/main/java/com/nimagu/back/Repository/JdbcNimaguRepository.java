@@ -252,6 +252,29 @@ public int deleteTProducto(int idtprod){
 }
 
 @Override
+ public List<Gasto> detalleporFecha(String fechi,String fechf ) {   
+        String selec = "SELECT * FROM gastos WHERE fecha BETWEEN ? AND ? ORDER BY fecha ASC";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Gasto.class),fechi,fechf);
+}
+
+@Override
+ public List<Gasto> detalleporProducto(String fechi,String fechf ) {   
+        String selec = "SELECT * FROM gastos WHERE fecha BETWEEN ? AND ? ORDER BY nprod ASC";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Gasto.class),fechi,fechf);
+}
+
+@Override
+ public List<Gasto> detalleporTipoProd(String fechi,String fechf ) {   
+        String selec = "SELECT * FROM gastos WHERE fecha BETWEEN ? AND ? ORDER BY ntipo ASC";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Gasto.class),fechi,fechf);
+}
+
+public List<Gasto> detalleporProveedor(String fechi,String fechf ) {   
+        String selec = "SELECT * FROM gastos WHERE fecha BETWEEN ? AND ? ORDER BY nprov ASC";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Gasto.class),fechi,fechf);
+}
+
+@Override
 public int getMaxIdGasto(){
         String consulta = "SELECT MAX(idgasto) FROM gastos";
      
