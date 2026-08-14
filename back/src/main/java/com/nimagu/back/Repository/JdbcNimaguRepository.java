@@ -16,6 +16,7 @@ import com.nimagu.back.Entidades.Gasto;
 import com.nimagu.back.Entidades.Hacienda;
 import com.nimagu.back.Entidades.MovHacienda;
 import com.nimagu.back.Entidades.Producto;
+import com.nimagu.back.Entidades.TipoMovH;
 import com.nimagu.back.Entidades.TipoProd;
 
 
@@ -459,15 +460,28 @@ public List<MovHacienda> detalleMovHxFecha(String fechaini, String fechafin){
     String selec = "SELECT * FROM movhacienda WHERE fecha BETWEEN ? AND ? ORDER BY abrev ASC";
     return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovHacienda.class),fechaini,fechafin);
 }
+@Override
+public List<MovHacienda> detalleMovHxThac(String fechaini, String fechafin){
+ String selec = "SELECT * FROM movhacienda WHERE fecha BETWEEN ? AND ? ORDER BY nhacienda ASC";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovHacienda.class),fechaini,fechafin);
+}
 
+@Override
+public List<MovHacienda> detalleMovHxCampo(String fechaini, String fechafin){
+   String selec = "SELECT * FROM movhacienda WHERE fecha BETWEEN ? AND ? ORDER BY ncampo ASC";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovHacienda.class),fechaini,fechafin);
+
+}
 @Override 
 public int saveMovH(MovHacienda movh){
         // Graba nuevo Movimiento de Hacienda
         return jdbcTemplate.update("INSERT INTO movhacienda(idmovh,fecha,idhacienda,nhacienda,"+                   
-                                   "cantidad,idcampo,ncampo,abrev,observ,marca1,marca2,marca3) "+
-                                   "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                                   "cantidad,tipomov,ineg,idcampo,ncampo,potrero,abrev,observ,"+
+                                   "marca1,marca2,marca3) "+
+                                   "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         new Object[] {movh.getIdmovh(),movh.getFecha(),movh.getIdhacienda(),movh.getNhacienda(),
-                      movh.getCantidad(),movh.getIdcampo(),movh.getNcampo(),movh.getAbrev(),movh.getObserv(),
+                      movh.getCantidad(),movh.getTipomov(),movh.getIneg(),movh.getIdcampo(),
+                      movh.getNcampo(),movh.getPotrero(),movh.getAbrev(),movh.getObserv(),
                       movh.getMarca1(),movh.getMarca2(),movh.getMarca3()
         });         
 }
@@ -501,12 +515,13 @@ public int getMaxIdMovH(){
       int resu = 0;
       try {                   
           resu = jdbcTemplate.update("UPDATE movhacienda SET fecha=?,idhacienda=?,nhacienda=?,"+                   
-                                   "cantidad=?,idcampo=?,ncampo=?,abrev=?,observ=?,marca1=?,marca2=?,marca3=? "+
+                                   "cantidad=?,tipomov=?,ineg=?,idcampo=?,ncampo=?,potrero=?,abrev=?,observ=?,"+
+                                   "marca1=?,marca2=?,marca3=? "+
                                    "WHERE idmovh=?",
                                     
                     new Object[] { movh.getFecha(),movh.getIdhacienda(),movh.getNhacienda(),
-                                   movh.getCantidad(),movh.getIdcampo(),movh.getNcampo(),movh.getAbrev(),
-                                   movh.getObserv(),
+                                   movh.getCantidad(),movh.getTipomov(),movh.getIneg(),movh.getIdcampo(),movh.getNcampo(),
+                                   movh.getPotrero(),movh.getAbrev(),movh.getObserv(),
                                    movh.getMarca1(),movh.getMarca2(),movh.getMarca3(),movh.getIdmovh()
                                 });
         } catch (IncorrectResultSizeDataAccessException e) {
@@ -526,6 +541,11 @@ public int deleteMovH(int idmov){
         return resu;
 }
 
-
+@Override
+// Tipos de Movimiento de hacienda
+public List<TipoMovH> AllTiposMovHacienda(){
+   String selec = "SELECT * FROM tipmovhac ORDER BY tipomov";
+   return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(TipoMovH.class));
+}
 }
 

@@ -8,8 +8,11 @@ public class MovHacienda {
     private int      idhacienda;
     private String   nhacienda;
     private int      cantidad;
+    private String   tipomov;
+    private String   ineg; 
     private int      idcampo;
     private String   ncampo;
+    private String   potrero;
     private String   abrev;
     private String   observ;
     private int      marca1;
@@ -112,6 +115,30 @@ public class MovHacienda {
 
     public void setAbrev(String abrev) {
         this.abrev = abrev;
+    }
+
+    public String getTipomov() {
+        return tipomov;
+    }
+
+    public void setTipomov(String tipomov) {
+        this.tipomov = tipomov;
+    }
+
+    public String getIneg() {
+        return ineg;
+    }
+
+    public void setIneg(String ineg) {
+        this.ineg = ineg;
+    }
+
+    public String getPotrero() {
+        return potrero;
+    }
+
+    public void setPotrero(String potrero) {
+        this.potrero = potrero;
     }
 
     

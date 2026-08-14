@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimagu.back.Entidades.Campo;
-import com.nimagu.back.Entidades.CompVta;
-import com.nimagu.back.Entidades.CuentaB;
-import com.nimagu.back.Entidades.Gasto;
+
 import com.nimagu.back.Entidades.Hacienda;
-import com.nimagu.back.Entidades.MovCta;
+
 import com.nimagu.back.Entidades.MovHacienda;
+import com.nimagu.back.Entidades.TipoMovH;
 import com.nimagu.back.Repository.JdbcNimaguRepository;
 
 
@@ -148,6 +147,27 @@ public class HaciendaController {
 
     }
 
+    // TIPOS MOV. HACIENDA
+
+   @GetMapping("/tmovhs")
+    public ResponseEntity<List<TipoMovH>> getTipoMovsHacienda() {
+    List<TipoMovH> movs = null;
+    try {                  
+      movs = nimaguRepository.AllTiposMovHacienda();
+    
+      if (movs.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movs, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+       return new ResponseEntity<>(movs, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  // MOV. HACIENDA
+
+
     @GetMapping("/movhs")
     public ResponseEntity<List<MovHacienda>> getMovsHacienda() {
     List<MovHacienda> movs = null;
@@ -180,6 +200,44 @@ public ResponseEntity<List<MovHacienda>>  detalleMovH(  @RequestParam("feci") St
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @GetMapping(value="/DetMovhxThac",params={"feci","fecf"})
+public ResponseEntity<List<MovHacienda>>  detalleMovHxThac(  @RequestParam("feci") String fechaini,
+                                                   @RequestParam("fecf") String fechafin) {
+    try {
+      List<MovHacienda> movims = null;
+            
+      movims = nimaguRepository.detalleMovHxThac(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+@GetMapping(value="/DetMovhxCampo",params={"feci","fecf"})
+public ResponseEntity<List<MovHacienda>>  detalleMovHxCampo(  @RequestParam("feci") String fechaini,
+                                                   @RequestParam("fecf") String fechafin) {
+    try {
+      List<MovHacienda> movims = null;
+            
+      movims = nimaguRepository.detalleMovHxCampo(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
    @PostMapping(value="/movh/nuevo")
     // Graba un nuevo Movimiento de Hacienda
     public ResponseEntity<String> crearMovHacienda(@RequestBody MovHacienda movh) {

@@ -8,6 +8,7 @@ import com.nimagu.back.Entidades.Gasto;
 import com.nimagu.back.Entidades.Hacienda;
 import com.nimagu.back.Entidades.MovHacienda;
 import com.nimagu.back.Entidades.Producto;
+import com.nimagu.back.Entidades.TipoMovH;
 import com.nimagu.back.Entidades.TipoProd;
 
 
@@ -53,6 +54,8 @@ int            saveHacienda(Hacienda hac);
 Hacienda       findHaciendaById(int idhac);
 int            getMaxIdHacienda();
 int            deleteHacienda(int idhac);
+
+List<TipoMovH> AllTiposMovHacienda();
 List<Campo>    AllCampos();
 int            saveCampo(Campo campo);
 int            actualizarCampo(Campo campo);
@@ -61,6 +64,9 @@ int            getMaxIdCampo();
 int            deleteCampo(int idcampo);
 List<MovHacienda> AllMovsHacienda();
 List<MovHacienda> detalleMovHxFecha(String fechaini, String fechafin);
+List<MovHacienda> detalleMovHxThac(String fechaini, String fechafin);
+List<MovHacienda> detalleMovHxCampo(String fechaini, String fechafin);
+    
 int            saveMovH(MovHacienda movh);
 MovHacienda    findMovHById(int idmovh);
 int            getMaxIdMovH();
