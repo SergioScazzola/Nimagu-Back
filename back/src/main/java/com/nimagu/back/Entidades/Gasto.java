@@ -17,6 +17,7 @@ public class Gasto {
   private double precioun;
   private float  tiva;
   private double importe;
+  private int    marca1;
   private String observ;
   
   public Gasto(){}
@@ -131,6 +132,14 @@ public class Gasto {
 
   public void setObserv(String observ) {
     this.observ = observ;
+  }
+
+  public int getMarca1() {
+    return marca1;
+  }
+
+  public void setMarca1(int marca1) {
+    this.marca1 = marca1;
   }
 
   
