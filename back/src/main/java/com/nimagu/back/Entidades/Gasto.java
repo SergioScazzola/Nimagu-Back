@@ -18,6 +18,7 @@ public class Gasto {
   private float  tiva;
   private double importe;
   private int    marca1;
+  private String fpago;
   private String observ;
   
   public Gasto(){}
@@ -140,6 +141,14 @@ public class Gasto {
 
   public void setMarca1(int marca1) {
     this.marca1 = marca1;
+  }
+
+  public String getFpago() {
+    return fpago;
+  }
+
+  public void setFpago(String fpago) {
+    this.fpago = fpago;
   }
 
   

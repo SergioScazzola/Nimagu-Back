@@ -17,6 +17,7 @@ public class CompVta {
   private float  preunit;
   private double importe;
   private String proced;
+  private int    marca1;
   private String observ;
 
   public CompVta(){}
@@ -131,6 +132,14 @@ public class CompVta {
 
   public void setObserv(String observ) {
     this.observ = observ;
+  }
+
+  public int getMarca1() {
+    return marca1;
+  }
+
+  public void setMarca1(int marca1) {
+    this.marca1 = marca1;
   }
 
   

@@ -102,11 +102,11 @@ public int saveCompVta(CompVta comp){
         // Graba nueva Compra/Venta
         return jdbcTemplate.update("INSERT INTO compvtas(idcomvta,compvta,fecha,idprocli,nprovcli,"+
                                    "nroliq,categoria,cantidad,totalk,promedio,preunit,importe,"+
-                                   "proced,observ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                   "proced,marca1,observ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         new Object[] { comp.getIdcomvta(),comp.getCompvta(),comp.getFecha(),comp.getIdprocli(),
                        comp.getNprovcli(),comp.getNroliq(),comp.getCategoria(),comp.getCantidad(),
                        comp.getTotalk(),comp.getPromedio(),comp.getPreunit(),comp.getImporte(),
-                       comp.getProced(),comp.getObserv()
+                       comp.getProced(),comp.getMarca1(),comp.getObserv()
         });
          
       }
@@ -118,12 +118,12 @@ public int saveCompVta(CompVta comp){
       try {                   
           resu = jdbcTemplate.update("UPDATE compvtas SET compvta=?,fecha=?,idprocli=?,nprovcli=?,"+
                                     "nroliq=?,categoria=?,cantidad=?,totalk=?,promedio=?,preunit=?,"+
-                                    "importe=?,proced=?,observ=? WHERE idcomvta=?",
+                                    "importe=?,proced=?,marca1=?,observ=? WHERE idcomvta=?",
                                     
                     new Object[] { comp.getCompvta(),comp.getFecha(),comp.getIdprocli(),comp.getNprovcli(),
                                   comp.getNroliq(),comp.getCategoria(),comp.getCantidad(),comp.getTotalk(),
                                   comp.getPromedio(),comp.getPreunit(),comp.getImporte(),comp.getProced(),
-                                  comp.getObserv(),comp.getIdcomvta()
+                                  comp.getMarca1(),comp.getObserv(),comp.getIdcomvta()
                                 });
         } catch (IncorrectResultSizeDataAccessException e) {
           return -3;
@@ -303,11 +303,11 @@ public int saveGasto(Gasto gasto){
         // Graba nuevo Gasto
         return jdbcTemplate.update("INSERT INTO gastos(idgasto,fecha,idproducto,nprod,idtipo,ntipo,"+           
                                    "idprov,nprov,ncomp,cantidad,precioun,tiva,importe,marca1,"+
-                                   "observ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                   "fpago,observ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         new Object[] { gasto.getIdgasto(),gasto.getFecha(),gasto.getIdproducto(),gasto.getNprod(),
                        gasto.getIdtipo(),gasto.getNtipo(),gasto.getIdprov(),gasto.getNprov(),
                        gasto.getNcomp(),gasto.getCantidad(),gasto.getPrecioun(),gasto.getTiva(),
-                       gasto.getImporte(),gasto.getMarca1(),gasto.getObserv() });
+                       gasto.getImporte(),gasto.getMarca1(),gasto.getFpago(),gasto.getObserv() });
 }                       
 
  @Override
@@ -316,11 +316,11 @@ public int saveGasto(Gasto gasto){
       try {                   
           resu = jdbcTemplate.update("UPDATE gastos SET fecha=?,idproducto=?,nprod=?,idtipo=?,ntipo=?,"+           
                                    "idprov=?,nprov=?,ncomp=?,cantidad=?,precioun=?,tiva=?,importe=?,marca1=?,"+
-                                   "observ=? WHERE idgasto=?",
+                                   "fpago=?,observ=? WHERE idgasto=?",
                     new Object[] {gasto.getFecha(),gasto.getIdproducto(),gasto.getNprod(),
                        gasto.getIdtipo(),gasto.getNtipo(),gasto.getIdprov(),gasto.getNprov(),
                        gasto.getNcomp(),gasto.getCantidad(),gasto.getPrecioun(),gasto.getTiva(),
-                       gasto.getImporte(),gasto.getMarca1(),gasto.getObserv(),gasto.getIdgasto()
+                       gasto.getImporte(),gasto.getMarca1(),gasto.getFpago(),gasto.getObserv(),gasto.getIdgasto()
                                 });
         } catch (IncorrectResultSizeDataAccessException e) {
           return -3;
@@ -456,10 +456,16 @@ public int deleteCampo(int idcampo){
 @Override 
 // Lista de Movimientos de Hacienda entre dos fechas, para armar matriz de informe
 // ordenado por abreviatura de CAMPO
-public List<MovHacienda> detalleMovHxFecha(String fechaini, String fechafin){
+public List<MovHacienda> detalleMovHxAbCampo(String fechaini, String fechafin){
     String selec = "SELECT * FROM movhacienda WHERE fecha BETWEEN ? AND ? ORDER BY abrev ASC";
     return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovHacienda.class),fechaini,fechafin);
 }
+
+public List<MovHacienda> detalleMovHxFecha(String fechaini, String fechafin){
+    String selec = "SELECT * FROM movhacienda WHERE fecha BETWEEN ? AND ? ORDER BY fecha ASC";
+    return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(MovHacienda.class),fechaini,fechafin);
+}
+
 @Override
 public List<MovHacienda> detalleMovHxThac(String fechaini, String fechafin){
  String selec = "SELECT * FROM movhacienda WHERE fecha BETWEEN ? AND ? ORDER BY nhacienda ASC, ncampo ASC";

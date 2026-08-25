@@ -183,9 +183,26 @@ public class HaciendaController {
        return new ResponseEntity<>(movs, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-@GetMapping(value="/DetMovh",params={"feci","fecf"})
+@GetMapping(value="/DetMovhxAbC",params={"feci","fecf"})
 public ResponseEntity<List<MovHacienda>>  detalleMovH(  @RequestParam("feci") String fechaini,
                                                    @RequestParam("fecf") String fechafin) {
+    try {
+      List<MovHacienda> movims = null;
+            
+      movims = nimaguRepository.detalleMovHxAbCampo(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+@GetMapping(value="/DetMovhxF",params={"feci","fecf"})
+public ResponseEntity<List<MovHacienda>>  detalleMovHxF(  @RequestParam("feci") String fechaini,
+                                                          @RequestParam("fecf") String fechafin) {
     try {
       List<MovHacienda> movims = null;
             

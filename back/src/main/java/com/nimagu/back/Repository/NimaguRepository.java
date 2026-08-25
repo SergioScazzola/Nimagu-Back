@@ -63,6 +63,7 @@ Campo          findCampoById(int idcampo);
 int            getMaxIdCampo();
 int            deleteCampo(int idcampo);
 List<MovHacienda> AllMovsHacienda();
+List<MovHacienda> detalleMovHxAbCampo(String fechaini, String fechafin);
 List<MovHacienda> detalleMovHxFecha(String fechaini, String fechafin);
 List<MovHacienda> detalleMovHxThac(String fechaini, String fechafin);
 List<MovHacienda> detalleMovHxCampo(String fechaini, String fechafin);
