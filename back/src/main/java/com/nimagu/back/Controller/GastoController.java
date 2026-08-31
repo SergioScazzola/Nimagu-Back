@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nimagu.back.Entidades.CompVta;
+import com.nimagu.back.Entidades.Fpago;
 import com.nimagu.back.Entidades.Gasto;
-
+import com.nimagu.back.Entidades.GastoFP;
 import com.nimagu.back.Repository.JdbcNimaguRepository;
 
 
@@ -34,6 +36,22 @@ public class GastoController {
     List<Gasto> gastos = null;
     try {                  
       gastos = nimaguRepository.AllGastos();
+    
+      if (gastos.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(gastos, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+       return new ResponseEntity<>(gastos, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+ @GetMapping("/gastosfp")
+    public ResponseEntity<List<GastoFP>> getGastosConFP() {
+    List<GastoFP> gastos = null;
+    try {                  
+      gastos = nimaguRepository.AllGastosFP();
     
       if (gastos.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -93,10 +111,10 @@ public class GastoController {
     }
 
  @GetMapping(value="/detxfecha",params={"feci","fecf"})
-    public ResponseEntity<List<Gasto>>  detallexFecha(  @RequestParam("feci") String fechaini,
+    public ResponseEntity<List<GastoFP>>  detallexFecha(  @RequestParam("feci") String fechaini,
                                                         @RequestParam("fecf") String fechafin) {
     try {
-      List<Gasto> movims = null;
+      List<GastoFP> movims = null;
             
       movims = nimaguRepository.detalleporFecha(fechaini,fechafin);
     
@@ -112,10 +130,10 @@ public class GastoController {
 
 
     @GetMapping(value="/detxprod",params={"feci","fecf"})
-    public ResponseEntity<List<Gasto>>  detalleXProd(  @RequestParam("feci") String fechaini,
+    public ResponseEntity<List<GastoFP>>  detalleXProd(  @RequestParam("feci") String fechaini,
                                                  @RequestParam("fecf") String fechafin) {
     try {
-      List<Gasto> movims = null;
+      List<GastoFP> movims = null;
             
       movims = nimaguRepository.detalleporProducto(fechaini,fechafin);
     
@@ -130,10 +148,10 @@ public class GastoController {
   }
 
    @GetMapping(value="/detxtprod",params={"feci","fecf"})
-    public ResponseEntity<List<Gasto>>  detallexTipoProd(  @RequestParam("feci") String fechaini,
+    public ResponseEntity<List<GastoFP>>  detallexTipoProd(  @RequestParam("feci") String fechaini,
                                                            @RequestParam("fecf") String fechafin) {
     try {
-      List<Gasto> movims = null;
+      List<GastoFP> movims = null;
             
       movims = nimaguRepository.detalleporTipoProd(fechaini,fechafin);
     
@@ -148,10 +166,10 @@ public class GastoController {
   }
 
   @GetMapping(value="/detxprov",params={"feci","fecf"})
-    public ResponseEntity<List<Gasto>>  detallexProveedor(  @RequestParam("feci") String fechaini,
+    public ResponseEntity<List<GastoFP>>  detallexProveedor(  @RequestParam("feci") String fechaini,
                                                            @RequestParam("fecf") String fechafin) {
     try {
-      List<Gasto> movims = null;
+      List<GastoFP> movims = null;
             
       movims = nimaguRepository.detalleporProveedor(fechaini,fechafin);
     
@@ -164,5 +182,60 @@ public class GastoController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  // FORMAS DE PAGO
+
+    @GetMapping("/fpago/fpagos")
+    public ResponseEntity<List<Fpago>> getFormasdePago() {
+    List<Fpago> fpagos = null;
+    try {                  
+      fpagos = nimaguRepository.AllFormasdePago();
     
+      if (fpagos.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(fpagos, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+       return new ResponseEntity<>(fpagos, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  @RequestMapping(value="/fpago/maxid")
+  public int getMaxFPago(){
+     int cantl = nimaguRepository.getMaxFPago();
+     return cantl;
+  }
+
+  @RequestMapping(value ="/fpago" , params={"idgasto"} )
+  public ResponseEntity<Fpago> getFPagoXGasto(@RequestParam("idgasto") Integer idg) {
+    Fpago fpago = nimaguRepository.findFPagoXGasto(idg);
+    if (fpago != null){
+      return new ResponseEntity<>(fpago, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @PostMapping(value="/fpago/nuevo")
+    // Graba una nueva f.de pago
+    public ResponseEntity<String> crearFormadePago(@RequestBody Fpago fpago) {
+       try {
+        int nrofp = nimaguRepository.saveFormadePago(fpago);
+        return new ResponseEntity<>(Integer.toString(nrofp), HttpStatus.CREATED);
+       } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+  }
+    
+  @PutMapping(value="/fpago/actualizar")
+    public ResponseEntity<String> updateFPago(@RequestBody Fpago fpago){
+      try {
+        int resultado = nimaguRepository.actualizarFPago(fpago);    
+        return new ResponseEntity<>(Integer.toString(resultado), HttpStatus.OK);
+      } catch (Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+     
+      } 
+    }
+
 }

@@ -2,7 +2,7 @@ package com.nimagu.back.Entidades;
 
 import java.util.Date;
 
-public class Gasto {
+public class GastoFP {
   
   private int    idgasto;
   private Date   fecha;
@@ -20,8 +20,9 @@ public class Gasto {
   private int    marca1;
   private int    fpago;
   private String observ;
+  private String descrip;
   
-  public Gasto(){}
+  public GastoFP(){}
 
   public int getIdgasto() {
     return idgasto;
@@ -149,6 +150,14 @@ public class Gasto {
 
   public void setFpago(int fpago) {
     this.fpago = fpago;
+  }
+
+  public String getDescrip() {
+    return descrip;
+  }
+
+  public void setDescrip(String descrip) {
+    this.descrip = descrip;
   }
 
   

@@ -8,11 +8,13 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nimagu.back.Entidades.Campo;
 import com.nimagu.back.Entidades.CompVta;
-
+import com.nimagu.back.Entidades.Fpago;
 import com.nimagu.back.Entidades.Gasto;
+import com.nimagu.back.Entidades.GastoFP;
 import com.nimagu.back.Entidades.Hacienda;
 import com.nimagu.back.Entidades.MovHacienda;
 import com.nimagu.back.Entidades.Producto;
@@ -252,27 +254,129 @@ public int deleteTProducto(int idtprod){
         return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Gasto.class));
 }
 
+ @Override
+ public List<GastoFP> AllGastosFP() {   
+  // datos del gasto + la descripcion de la forma de pago
+        String selec = "SELECT g.idgasto," + 
+                    "g.fecha," + 
+                    "g.idproducto," + 
+                    "g.nprod," + 
+                    "g.idtipo," + 
+                    "g.ntipo," + 
+                    "g.idprov," + 
+                    "g.nprov," + 
+                    "g.ncomp," +
+                    "g.cantidad,"+
+                    "g.precioun," +
+                    "g.tiva," + 
+                    "g.importe," + 
+                    "g.marca1," +
+                    "g.fpago," + 
+                    "g.observ," +
+                    "f.descrip " + 
+                    "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
+                    "ORDER BY fecha ASC LIMIT 200";
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(GastoFP.class));
+}
+
+
 @Override
- public List<Gasto> detalleporFecha(String fechi,String fechf ) {   
-        String selec = "SELECT * FROM gastos WHERE fecha BETWEEN ? AND ? ORDER BY fecha ASC";
-        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Gasto.class),fechi,fechf);
+ public List<GastoFP> detalleporFecha(String fechi,String fechf ) {   
+        String selec = "SELECT g.idgasto," + 
+                    "g.fecha," + 
+                    "g.idproducto," + 
+                    "g.nprod," + 
+                    "g.idtipo," + 
+                    "g.ntipo," + 
+                    "g.idprov," + 
+                    "g.nprov," + 
+                    "g.ncomp," +
+                    "g.cantidad,"+
+                    "g.precioun," +
+                    "g.tiva," + 
+                    "g.importe," + 
+                    "g.marca1," +
+                    "g.fpago," + 
+                    "g.observ," +
+                    "f.descrip " + 
+                    "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
+                    "WHERE fecha BETWEEN ? AND ? ORDER BY fecha ASC";
+        
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(GastoFP.class),fechi,fechf);
 }
 
 @Override
- public List<Gasto> detalleporProducto(String fechi,String fechf ) {   
-        String selec = "SELECT * FROM gastos WHERE fecha BETWEEN ? AND ? ORDER BY nprod ASC";
-        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Gasto.class),fechi,fechf);
+ public List<GastoFP> detalleporProducto(String fechi,String fechf ) {   
+        String selec = "SELECT g.idgasto," + 
+                    "g.fecha," + 
+                    "g.idproducto," + 
+                    "g.nprod," + 
+                    "g.idtipo," + 
+                    "g.ntipo," + 
+                    "g.idprov," + 
+                    "g.nprov," + 
+                    "g.ncomp," +
+                    "g.cantidad,"+
+                    "g.precioun," +
+                    "g.tiva," + 
+                    "g.importe," + 
+                    "g.marca1," +
+                    "g.fpago," + 
+                    "g.observ," +
+                    "f.descrip " + 
+                    "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
+                    "WHERE fecha BETWEEN ? AND ? ORDER BY nprod ASC";
+        
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(GastoFP.class),fechi,fechf);
 }
 
 @Override
- public List<Gasto> detalleporTipoProd(String fechi,String fechf ) {   
-        String selec = "SELECT * FROM gastos WHERE fecha BETWEEN ? AND ? ORDER BY ntipo ASC";
-        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Gasto.class),fechi,fechf);
+ public List<GastoFP> detalleporTipoProd(String fechi,String fechf ) {   
+        String selec = "SELECT g.idgasto," + 
+                    "g.fecha," + 
+                    "g.idproducto," + 
+                    "g.nprod," + 
+                    "g.idtipo," + 
+                    "g.ntipo," + 
+                    "g.idprov," + 
+                    "g.nprov," + 
+                    "g.ncomp," +
+                    "g.cantidad,"+
+                    "g.precioun," +
+                    "g.tiva," + 
+                    "g.importe," + 
+                    "g.marca1," +
+                    "g.fpago," + 
+                    "g.observ," +
+                    "f.descrip " + 
+                    "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
+                    "WHERE fecha BETWEEN ? AND ? ORDER BY ntipo ASC";
+        
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(GastoFP.class),fechi,fechf);
 }
 
-public List<Gasto> detalleporProveedor(String fechi,String fechf ) {   
-        String selec = "SELECT * FROM gastos WHERE fecha BETWEEN ? AND ? ORDER BY nprov ASC";
-        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Gasto.class),fechi,fechf);
+public List<GastoFP> detalleporProveedor(String fechi,String fechf ) {   
+        String selec = "SELECT g.idgasto," + 
+                    "g.fecha," + 
+                    "g.idproducto," + 
+                    "g.nprod," + 
+                    "g.idtipo," + 
+                    "g.ntipo," + 
+                    "g.idprov," + 
+                    "g.nprov," + 
+                    "g.ncomp," +
+                    "g.cantidad,"+
+                    "g.precioun," +
+                    "g.tiva," + 
+                    "g.importe," + 
+                    "g.marca1," +
+                    "g.fpago," + 
+                    "g.observ," +
+                    "f.descrip " + 
+                    "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
+                    "WHERE fecha BETWEEN ? AND ? ORDER BY nprov ASC";
+        
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(GastoFP.class),fechi,fechf);
 }
 
 @Override
@@ -338,6 +442,58 @@ public int deleteGasto(int idgasto){
         return resu;
       }
 
+@Override
+public List<Fpago> AllFormasdePago(){
+   String selec = "SELECT * FROM fpagos ORDER BY idgasto DESC";
+   return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(Fpago.class));
+}
+
+ @Override
+ public int getMaxFPago(){      
+      String consulta = "SELECT MAX(idfpago) FROM fpagos";   
+    Object obj = jdbcTemplate.queryForObject(consulta,Integer.class);    
+    if (obj==null){
+          return 0;
+        } else {
+          return ((int)obj);
+        }         
+ }
+ @Override
+public Fpago findFPagoXGasto(int idg){
+    String q = "SELECT * FROM fpagos WHERE idgasto=?";
+        try {
+          Fpago fpago = jdbcTemplate.queryForObject(q,
+              BeanPropertyRowMapper.newInstance(Fpago.class), idg);          
+          return fpago;
+        } catch (IncorrectResultSizeDataAccessException e) {
+          return null;
+        }
+}
+@Override
+@Transactional
+public int saveFormadePago(Fpago fpago){
+// graba forma de pago y ademas actualiza el gasto con el id de f.de pago correspondiente
+  int resu = 0;
+  resu =  jdbcTemplate.update("INSERT INTO fpagos(idfpago,idgasto,descrip) VALUES(?,?,?)",
+        new Object[] { fpago.getIdfpago(),fpago.getIdgasto(),fpago.getDescrip()
+        });  
+   resu = jdbcTemplate.update("UPDATE gastos SET fpago=? WHERE idgasto=?",                                 
+            new Object[] {fpago.getIdfpago(),fpago.getIdgasto()});  
+  return resu;    
+}
+
+@Override
+public int actualizarFPago(Fpago fpago){
+      int resu = 0;
+      try {                   
+          resu = jdbcTemplate.update("UPDATE fpagos SET idgasto=?,descrip=? WHERE idfpago=?",
+                    new Object[] { fpago.getIdgasto(),fpago.getDescrip(),fpago.getIdfpago()
+                                });
+        } catch (IncorrectResultSizeDataAccessException e) {
+          return -3;
+      }
+      return resu; 
+}
 
 // HACIENDA 
 
