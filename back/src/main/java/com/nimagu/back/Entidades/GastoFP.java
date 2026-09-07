@@ -19,6 +19,7 @@ public class GastoFP {
   private double importe;
   private int    marca1;
   private int    fpago;
+  private String destino;
   private String observ;
   private String descrip;
   
@@ -158,6 +159,14 @@ public class GastoFP {
 
   public void setDescrip(String descrip) {
     this.descrip = descrip;
+  }
+
+  public String getDestino() {
+    return destino;
+  }
+
+  public void setDestino(String destino) {
+    this.destino = destino;
   }
 
   

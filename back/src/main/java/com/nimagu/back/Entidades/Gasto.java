@@ -19,6 +19,7 @@ public class Gasto {
   private double importe;
   private int    marca1;
   private int    fpago;
+  private String destino;
   private String observ;
   
   public Gasto(){}
@@ -151,6 +152,13 @@ public class Gasto {
     this.fpago = fpago;
   }
 
+  public String getDestino() {
+    return destino;
+  }
+
+  public void setDestino(String destino) {
+    this.destino = destino;
+  }
   
 
 }

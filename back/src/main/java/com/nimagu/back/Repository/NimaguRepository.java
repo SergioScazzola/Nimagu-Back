@@ -50,6 +50,7 @@ List<GastoFP>    detalleporFecha(String fechaini, String fechafin);
 List<GastoFP>    detalleporProducto(String fechaini, String fechafin);
 List<GastoFP>    detalleporTipoProd(String fechaini, String fechafin);
 List<GastoFP>    detalleporProveedor(String fechaini,String fechafin);
+List<GastoFP>    detalleporDestino(String fechaini,String fechafin);
 List<Fpago>    AllFormasdePago();
 List<GastoFP>    AllGastosFP();
 int            getMaxFPago();
