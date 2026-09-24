@@ -5,6 +5,7 @@ public class Campo {
     private String nombre;
     private String abrev;
     private String proced;
+    private String abproc;
 
     public Campo(){}
 
@@ -38,6 +39,14 @@ public class Campo {
 
     public void setAbrev(String abrev) {
         this.abrev = abrev;
+    }
+
+    public String getAbproc() {
+        return abproc;
+    }
+
+    public void setAbproc(String abproc) {
+        this.abproc = abproc;
     }
 
     

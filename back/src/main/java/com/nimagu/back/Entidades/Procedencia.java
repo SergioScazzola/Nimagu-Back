@@ -3,6 +3,7 @@ package com.nimagu.back.Entidades;
 public class Procedencia {
     private int    idProcedencia;
     private String procedencia;
+    private String abproc;
 
     public Procedencia(){}
 
@@ -20,6 +21,14 @@ public class Procedencia {
 
     public void setProcedencia(String procedencia) {
         this.procedencia = procedencia;
+    }
+
+    public String getAbproc() {
+        return abproc;
+    }
+
+    public void setAbproc(String abproc) {
+        this.abproc = abproc;
     }
 
     

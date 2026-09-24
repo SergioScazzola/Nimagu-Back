@@ -199,6 +199,24 @@ public class GastoController {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @GetMapping(value="/detxproc",params={"feci","fecf"})
+    public ResponseEntity<List<GastoFP>>  detalleXProcedencia(  @RequestParam("feci") String fechaini,
+                                                                @RequestParam("fecf") String fechafin) {
+    try {
+      List<GastoFP> movims = null;
+            
+      movims = nimaguRepository.detalleporProced(fechaini,fechafin);
+    
+      if (movims.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+         return new ResponseEntity<>(movims, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
   // FORMAS DE PAGO
 
     @GetMapping("/fpago/fpagos")

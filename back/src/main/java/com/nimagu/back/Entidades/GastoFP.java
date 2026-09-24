@@ -20,6 +20,7 @@ public class GastoFP {
   private int    marca1;
   private int    fpago;
   private String destino;
+  private String proced;
   private String observ;
   private String descrip;
   
@@ -167,6 +168,14 @@ public class GastoFP {
 
   public void setDestino(String destino) {
     this.destino = destino;
+  }
+
+  public String getProced() {
+    return proced;
+  }
+
+  public void setProced(String proced) {
+    this.proced = proced;
   }
 
   

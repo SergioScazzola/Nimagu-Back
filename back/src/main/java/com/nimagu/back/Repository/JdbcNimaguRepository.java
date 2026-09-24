@@ -274,6 +274,7 @@ public int deleteTProducto(int idtprod){
                     "g.fpago," + 
                     "g.observ," +
                     "g.destino," +
+                    "g.proced,"+
                     "f.descrip " + 
                     "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
                     "ORDER BY fecha ASC LIMIT 200";
@@ -300,6 +301,7 @@ public int deleteTProducto(int idtprod){
                     "g.fpago," + 
                     "g.observ," +
                     "g.destino," +
+                    "g.proced," +
                     "f.descrip " + 
                     "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
                     "WHERE fecha BETWEEN ? AND ? ORDER BY fecha ASC";
@@ -326,6 +328,7 @@ public int deleteTProducto(int idtprod){
                     "g.fpago," + 
                     "g.observ," +
                     "g.destino," +
+                    "g.proced," +
                     "f.descrip " + 
                     "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
                     "WHERE fecha BETWEEN ? AND ? ORDER BY nprod ASC, fecha ASC";
@@ -352,13 +355,14 @@ public int deleteTProducto(int idtprod){
                     "g.fpago," + 
                     "g.observ," +
                     "g.destino," +
+                    "g.proced," +
                     "f.descrip " + 
                     "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
                     "WHERE fecha BETWEEN ? AND ? ORDER BY ntipo ASC, fecha ASC";
         
         return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(GastoFP.class),fechi,fechf);
 }
-
+@Override
 public List<GastoFP> detalleporProveedor(String fechi,String fechf ) {   
         String selec = "SELECT g.idgasto," + 
                     "g.fecha," + 
@@ -377,13 +381,14 @@ public List<GastoFP> detalleporProveedor(String fechi,String fechf ) {
                     "g.fpago," + 
                     "g.observ," +
                     "g.destino," +
+                    "g.proced," +
                     "f.descrip " + 
                     "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
                     "WHERE fecha BETWEEN ? AND ? ORDER BY nprov ASC, fecha ASC";
         
         return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(GastoFP.class),fechi,fechf);
 }
-
+@Override
 public List<GastoFP> detalleporDestino(String fechi,String fechf ) {   
         String selec = "SELECT g.idgasto," + 
                     "g.fecha," + 
@@ -402,12 +407,41 @@ public List<GastoFP> detalleporDestino(String fechi,String fechf ) {
                     "g.fpago," + 
                     "g.observ," +
                     "g.destino," +
+                    "g.proced,"+
                     "f.descrip " + 
                     "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
                     "WHERE fecha BETWEEN ? AND ? ORDER BY destino ASC,fecha ASC";
         
         return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(GastoFP.class),fechi,fechf);
 }
+
+@Override
+public List<GastoFP> detalleporProced(String fechi,String fechf ) {   
+        String selec = "SELECT g.idgasto," + 
+                    "g.fecha," + 
+                    "g.idproducto," + 
+                    "g.nprod," + 
+                    "g.idtipo," + 
+                    "g.ntipo," + 
+                    "g.idprov," + 
+                    "g.nprov," + 
+                    "g.ncomp," +
+                    "g.cantidad,"+
+                    "g.precioun," +
+                    "g.tiva," + 
+                    "g.importe," + 
+                    "g.marca1," +
+                    "g.fpago," + 
+                    "g.observ," +
+                    "g.destino," +
+                    "g.proced,"+
+                    "f.descrip " + 
+                    "FROM gastos g LEFT JOIN fpagos f ON g.idgasto=f.idgasto "+
+                    "WHERE fecha BETWEEN ? AND ? ORDER BY proced ASC,fecha ASC";
+        
+        return jdbcTemplate.query(selec, BeanPropertyRowMapper.newInstance(GastoFP.class),fechi,fechf);
+}
+
 @Override
 public int getMaxIdGasto(){
         String consulta = "SELECT MAX(idgasto) FROM gastos";
@@ -436,12 +470,12 @@ public int saveGasto(Gasto gasto){
         // Graba nuevo Gasto
         return jdbcTemplate.update("INSERT INTO gastos(idgasto,fecha,idproducto,nprod,idtipo,ntipo,"+           
                                    "idprov,nprov,ncomp,cantidad,precioun,tiva,importe,marca1,"+
-                                   "fpago,destino,observ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                   "fpago,destino,proced,observ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         new Object[] { gasto.getIdgasto(),gasto.getFecha(),gasto.getIdproducto(),gasto.getNprod(),
                        gasto.getIdtipo(),gasto.getNtipo(),gasto.getIdprov(),gasto.getNprov(),
                        gasto.getNcomp(),gasto.getCantidad(),gasto.getPrecioun(),gasto.getTiva(),
                        gasto.getImporte(),gasto.getMarca1(),gasto.getFpago(),
-                       gasto.getDestino(),gasto.getObserv() });
+                       gasto.getDestino(),gasto.getProced(),gasto.getObserv() });
 }                       
 
  @Override
@@ -450,12 +484,12 @@ public int saveGasto(Gasto gasto){
       try {                   
           resu = jdbcTemplate.update("UPDATE gastos SET fecha=?,idproducto=?,nprod=?,idtipo=?,ntipo=?,"+           
                                    "idprov=?,nprov=?,ncomp=?,cantidad=?,precioun=?,tiva=?,importe=?,marca1=?,"+
-                                   "fpago=?,destino=?,observ=? WHERE idgasto=?",
+                                   "fpago=?,destino=?,proced=?,observ=? WHERE idgasto=?",
                     new Object[] {gasto.getFecha(),gasto.getIdproducto(),gasto.getNprod(),
                        gasto.getIdtipo(),gasto.getNtipo(),gasto.getIdprov(),gasto.getNprov(),
                        gasto.getNcomp(),gasto.getCantidad(),gasto.getPrecioun(),gasto.getTiva(),
                        gasto.getImporte(),gasto.getMarca1(),gasto.getFpago(),gasto.getDestino(),
-                       gasto.getObserv(),gasto.getIdgasto()
+                       gasto.getProced(),gasto.getObserv(),gasto.getIdgasto()
                                 });
         } catch (IncorrectResultSizeDataAccessException e) {
           return -3;
@@ -583,8 +617,8 @@ public int deleteHacienda(int idhac){
 @Override 
 public int saveCampo(Campo campo){
         // Graba nuevo Campo
-        return jdbcTemplate.update("INSERT INTO campos(idcampo,nombre,abrev,proced) VALUES(?,?,?,?)",
-        new Object[] {campo.getIdcampo(),campo.getNombre(),campo.getAbrev(),campo.getProced()
+        return jdbcTemplate.update("INSERT INTO campos(idcampo,nombre,abrev,proced,abproc) VALUES(?,?,?,?,?)",
+        new Object[] {campo.getIdcampo(),campo.getNombre(),campo.getAbrev(),campo.getProced(),campo.getAbproc()
         });         
 }
 @Override
@@ -602,8 +636,8 @@ public Campo findCampoById(int idcampo) {
  public int actualizarCampo(Campo campo){
       int resu = 0;
       try {                   
-          resu = jdbcTemplate.update("UPDATE campos SET nombre=?,abrev=?,proced=? WHERE idcampo=?",
-                    new Object[] {campo.getNombre(),campo.getAbrev(),campo.getProced(),campo.getIdcampo()
+          resu = jdbcTemplate.update("UPDATE campos SET nombre=?,abrev=?,proced=?,abproc=? WHERE idcampo=?",
+                    new Object[] {campo.getNombre(),campo.getAbrev(),campo.getProced(),campo.getAbproc(),campo.getIdcampo()
                                 });
         } catch (IncorrectResultSizeDataAccessException e) {
           return -3;
